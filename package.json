@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "js-tokens": "^9.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^6.30.1"
