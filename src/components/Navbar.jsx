@@ -92,8 +92,8 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/contact">
-                  <span className="nav-text">Contact</span>
+                <a className="nav-link" href="/about">
+                  <span className="nav-text">About Us</span>
                 </a>
               </li>
             </ul>

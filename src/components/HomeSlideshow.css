@@ -1,0 +1,22 @@
+.carousel .legend {
+  margin-top: 0;
+  padding: 8px 12px 10px 12px;
+  font-size: 1.08rem;
+  font-weight: bold;
+  border-radius: 0 0 12px 12px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.85) !important;
+  color: #111;
+  top: unset;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+.carousel .slide img {
+  margin-bottom: 0;
+  display: block;
+} 

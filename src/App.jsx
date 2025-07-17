@@ -13,14 +13,19 @@ import BackendTest from './components/BackendTest.jsx';
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/donor-dashboard" element={<DonorDashboard />} />
-        <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
-        <Route path="/test-backend" element={<BackendTest />} />
-      </Routes>
-      <Footer />
+      <div className="app-root">
+        <Navbar />
+        <div className="app-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/donor-dashboard" element={<DonorDashboard />} />
+            <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
+            <Route path="/test-backend" element={<BackendTest />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
     </Router>
   );
 }

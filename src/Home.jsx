@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HomeSlideshow from './components/HomeSlideshow';
 
 function Home() {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ function Home() {
         <p className="home-hero-subtitle">
           Connecting donors and NGOs to ensure excess food reaches those who need it most.
         </p>
+        <HomeSlideshow />
         <div className="home-divider" />
         <div className="home-end-options">
           <h2 className="home-end-title">
