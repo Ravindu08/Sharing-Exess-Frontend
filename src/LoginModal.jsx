@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import VerificationModal from './components/VerificationModal';
+import ForgotPasswordModal from './components/ForgotPasswordModal';
 
 function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
   const [errors, setErrors] = useState({});
   const [showVerification, setShowVerification] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
+  const [showForgot, setShowForgot] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -179,9 +181,9 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
               <button type="submit" className="login-submit-btn">
                 Login
               </button>
-              <a href="/forgot-password" className="forgot-password">
+              <button className="forgot-password-link" onClick={() => setShowForgot(true)} style={{ marginTop: 12, background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', textDecoration: 'underline' }}>
                 Forgot Password?
-              </a>
+              </button>
             </div>
 
             <div className="signup-link">
@@ -199,6 +201,7 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
         onClose={() => setShowVerification(false)}
         onVerified={handleVerified}
       />
+      <ForgotPasswordModal show={showForgot} onClose={() => setShowForgot(false)} />
     </>
   );
 }
