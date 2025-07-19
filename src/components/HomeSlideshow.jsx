@@ -14,16 +14,13 @@ function HomeSlideshow() {
         dynamicHeight={false}
       >
         <div>
-          <img src="/slideshow/slide1.jpg" alt="Food Flow" />
+          <img src="/slideshow/slide5.jpg" alt="World Hunger Day" />
         </div>
         <div>
           <img src="/slideshow/slide2.jpg" alt="Donation Box" />
         </div>
         <div>
           <img src="/slideshow/slide3.jpg" alt="Market Veggies" />
-        </div>
-        <div>
-          <img src="/slideshow/slide5.jpg" alt="World Hunger Day" />
         </div>
       </Carousel>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import LoginModal from '../LoginModal.jsx';
 import SignupModal from './SignupModal.jsx';
 
@@ -87,9 +88,9 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/ngos">
+                <Link className="nav-link" to="/ngos">
                   <span className="nav-text">NGOs</span>
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/about">
