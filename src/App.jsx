@@ -9,20 +9,26 @@ import Home from './Home.jsx';
 import DonorDashboard from './DonorDashboard.jsx';
 import RecipientDashboard from './RecipientDashboard.jsx';
 import BackendTest from './components/BackendTest.jsx';
+import NGOs from './components/NGOs.jsx';
+import Donate from './components/Donate.jsx';
 
 function App() {
   return (
     <Router>
       <div className="app-root">
         <Navbar />
-        <div className="app-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/donor-dashboard" element={<DonorDashboard />} />
-            <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
-            <Route path="/test-backend" element={<BackendTest />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
+        <div className="main-background">
+          <div className="app-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/donor-dashboard" element={<DonorDashboard />} />
+              <Route path="/recipient-dashboard" element={<RecipientDashboard />} />
+              <Route path="/test-backend" element={<BackendTest />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/ngos" element={<NGOs />} />
+              <Route path="/donate" element={<Donate />} />
+            </Routes>
+          </div>
         </div>
         <Footer />
       </div>
