@@ -9,12 +9,20 @@ function Navbar() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [username, setUsername] = useState('');
 
   // Check if user is logged in on component mount
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
   }, []);
 
@@ -108,8 +116,23 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    <span className="user-name">Hello, {user.name}</span>
-                    <span className="user-role">({user.role})</span>
+                    {(() => {
+  const role = (user && user.role) || localStorage.getItem('role') || '';
+  const name = (user && user.name) || '';
+  if (["admin", "officer"].includes(role)) {
+    return (
+      <span className="user-role" style={{fontWeight: 700, color: '#28a745', fontSize: '1.1rem', letterSpacing: '0.5px'}}>
+        {role.charAt(0).toUpperCase() + role.slice(1)}
+      </span>
+    );
+  } else if (name) {
+    return (
+      <span className="user-name">Hello, {name} ({role})</span>
+    );
+  } else {
+    return null;
+  }
+})()}
                   </div>
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>
