@@ -330,19 +330,27 @@ function RecipientDashboard() {
       )}
       {showRequestModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="modal-content" style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 320, maxWidth: 400, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-            <button onClick={closeRequestModal} style={{ float: 'right', background: 'none', border: 'none', fontSize: 20, cursor: 'pointer' }}>&times;</button>
-            <h2>Request Custom Food</h2>
-            <form onSubmit={handleCustomRequestSubmit}>
-              <label>Food Name:</label>
-              <input type="text" name="food_name" value={customRequest.food_name} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 12 }} />
-              <label>Quantity:</label>
-              <input type="text" name="quantity" value={customRequest.quantity} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 12 }} />
-              <label>Needed By:</label>
-              <input type="date" name="needed_by" value={customRequest.needed_by} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 12 }} />
-              <label>Location:</label>
-              <input type="text" name="location" value={customRequest.location} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 12 }} />
-              <button type="submit" disabled={requestLoading} style={{ width: '100%' }}>
+          <div className="modal-content" style={{ background: '#fff', padding: 32, borderRadius: 16, minWidth: 350, maxWidth: 420, boxShadow: '0 4px 24px rgba(40,167,69,0.15)', fontFamily: "'Montserrat', sans-serif", position: 'relative' }}>
+            <button onClick={closeRequestModal} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#28a745', fontWeight: 700 }}>&times;</button>
+            <h2 style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif", fontWeight: 900, fontSize: '2rem', textAlign: 'center', marginBottom: 24 }}>Request Custom Food</h2>
+            <form onSubmit={handleCustomRequestSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <div className="form-group">
+                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Food Name:</label>
+                <input type="text" name="food_name" value={customRequest.food_name} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
+              </div>
+              <div className="form-group">
+                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Quantity:</label>
+                <input type="text" name="quantity" value={customRequest.quantity} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
+              </div>
+              <div className="form-group">
+                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Needed By:</label>
+                <input type="date" name="needed_by" value={customRequest.needed_by} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
+              </div>
+              <div className="form-group">
+                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Location:</label>
+                <input type="text" name="location" value={customRequest.location} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
+              </div>
+              <button type="submit" disabled={requestLoading} style={{ width: '100%', background: '#28a745', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', fontWeight: 700, fontSize: 18, fontFamily: "'Montserrat', sans-serif", marginTop: 8, boxShadow: '0 2px 8px rgba(40,167,69,0.10)', cursor: requestLoading ? 'not-allowed' : 'pointer' }}>
                 {requestLoading ? 'Submitting...' : 'Submit Request'}
               </button>
             </form>

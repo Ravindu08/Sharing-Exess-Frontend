@@ -11,6 +11,8 @@ import RecipientDashboard from './RecipientDashboard.jsx';
 import BackendTest from './components/BackendTest.jsx';
 import NGOs from './components/NGOs.jsx';
 import Donate from './components/Donate.jsx';
+import FoodDonationsDashboard from './components/FoodDonationsDashboard.jsx';
+import CalendarPage from './components/CalendarPage.jsx';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/ngos" element={<NGOs />} />
               <Route path="/donate" element={<Donate />} />
+              <Route path="/food-donations" element={<FoodDonationsDashboard />} />
+              <Route path="/calendar" element={<CalendarPage />} />
             </Routes>
           </div>
         </div>
