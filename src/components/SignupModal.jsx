@@ -7,7 +7,9 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: '',
+    phone_number: '',
+    location: ''
   });
   const [errors, setErrors] = useState({});
   const [showVerification, setShowVerification] = useState(false);
@@ -63,6 +65,15 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
       newErrors.role = 'Please select a role';
     }
 
+    // Phone number validation
+    if (!formData.phone_number.trim()) {
+      newErrors.phone_number = 'Phone number is required';
+    }
+    // Location validation
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location is required';
+    }
+
     if (Object.keys(newErrors).length === 0) {
       try {
         console.log('Attempting to signup with:', { name: formData.name, email: formData.email, role: formData.role });
@@ -76,7 +87,9 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
             name: formData.name,
             email: formData.email,
             password: formData.password,
-            role: formData.role
+            role: formData.role,
+            phone_number: formData.phone_number,
+            location: formData.location
           })
         });
 
@@ -207,6 +220,33 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
               {errors.role && <span className="error-message">{errors.role}</span>}
             </div>
 
+            <div className="form-group">
+              <label htmlFor="phone_number">Phone Number</label>
+              <input
+                type="text"
+                id="phone_number"
+                name="phone_number"
+                placeholder="Enter your phone number"
+                value={formData.phone_number}
+                onChange={handleChange}
+                className={errors.phone_number ? 'error' : ''}
+              />
+              {errors.phone_number && <span className="error-message">{errors.phone_number}</span>}
+            </div>
+            <div className="form-group">
+              <label htmlFor="location">Location</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                placeholder="Enter your location"
+                value={formData.location}
+                onChange={handleChange}
+                className={errors.location ? 'error' : ''}
+              />
+              {errors.location && <span className="error-message">{errors.location}</span>}
+            </div>
+
             {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
 
             <div className="form-actions">
@@ -227,6 +267,7 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
       <VerificationModal
         isOpen={showVerification}
         email={signupEmail}
+        password={formData.password}
         onClose={() => setShowVerification(false)}
         onVerified={handleVerified}
       />

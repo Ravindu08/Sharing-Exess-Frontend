@@ -1935,3 +1935,18 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
+/* Add or update these rules for a darker hover effect */
+.navbar-nav .nav-link:hover {
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+}
+
+/* For Donate button specifically if it has a unique class */
+.donate-btn:hover {
+  background: linear-gradient(135deg, #17692f 0%, #13805c 100%) !important;
+}
+
+/* For Home and NGOs if you want to target them specifically, add a class or use nth-child selectors if needed */

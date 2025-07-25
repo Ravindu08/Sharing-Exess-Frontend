@@ -35,9 +35,26 @@ function Home() {
   };
 
   return (
-    <div className="home-bg-wrapper">
-      <div className="home-bg-overlay" />
-      <div className="home-options-container">
+    <div className="home-bg-wrapper" style={{
+      position: 'relative',
+      minHeight: '100vh',
+      backgroundImage: 'url(/background.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      {/* Dark overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(20, 30, 20, 0.65)',
+        zIndex: 1
+      }} />
+      <div className="home-bg-overlay" style={{ position: 'relative', zIndex: 2 }} />
+      <div className="home-options-container" style={{ position: 'relative', zIndex: 3 }}>
         <h1 className="home-hero-title">
           Reduce Food Waste.<br />
           Feed the Hungry.

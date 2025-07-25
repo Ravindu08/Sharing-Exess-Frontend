@@ -30,11 +30,46 @@ function Donate() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Donation form submitted:', formData);
-    alert('Thank you for your donation! We will contact you soon.');
+    if (!user) {
+      alert('You must be logged in to donate.');
+      return;
+    }
+    const payload = {
+      donor_id: user.id,
+      food_name: formData.foodName,
+      quantity: formData.quantity,
+      expiry_date: formData.expiryDate,
+      location: formData.location,
+      description: formData.description,
+      contact_phone: formData.contactPhone,
+      contact_email: formData.contactEmail
+    };
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/add_listing.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert('Thank you for your donation! We will contact you soon.');
+        setFormData({
+          foodName: '',
+          quantity: '',
+          expiryDate: '',
+          location: '',
+          description: '',
+          contactPhone: '',
+          contactEmail: ''
+        });
+      } else {
+        alert(data.message || 'Failed to submit donation.');
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+    }
   };
 
   return (
