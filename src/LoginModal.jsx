@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import VerificationModal from './components/VerificationModal';
+import ForgotPasswordModal from './components/ForgotPasswordModal';
+
+import { useNavigate } from 'react-router-dom';
 
 function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: ''
+    role: '' // will be auto-filled for admin/officer
   });
   const [errors, setErrors] = useState({});
   const [showVerification, setShowVerification] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
+  const [showForgot, setShowForgot] = useState(false);
+  const [officerMode, setOfficerMode] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +33,21 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (officerMode) {
+      if (formData.password === 'admin123') {
+        if (onLoginSuccess) {
+          onLoginSuccess({ role: 'officer', name: 'Officer User', email: 'officer@sharingexcess.com' });
+        }
+        onClose();
+        setTimeout(() => {
+          navigate('/calendar', { replace: true });
+        }, 100);
+        return;
+      } else {
+        setErrors({ password: 'Incorrect password for officer.' });
+        return;
+      }
+    }
     const newErrors = {};
 
     // Email validation
@@ -44,8 +64,13 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
       newErrors.password = 'Password must be at least 6 characters long';
     }
 
-    // Role validation
-    if (!formData.role) {
+    // Auto-fill role for admin/officer
+    let autoRole = formData.role;
+    if (formData.email === 'admin@sharingexcess.com') autoRole = 'admin';
+    else if (formData.email === 'officer@sharingexcess.com') autoRole = 'officer';
+    else if (!formData.role && formData.email) autoRole = '';
+    // This ensures officer@sharingexcess.com always gets 'officer' role sent
+    if (!autoRole) {
       newErrors.role = 'Please select a role';
     }
 
@@ -59,15 +84,18 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
           body: JSON.stringify({
             email: formData.email,
             password: formData.password,
-            role: formData.role
+            role: autoRole || formData.role
           })
         });
 
         const data = await response.json();
         
+        console.log('Logged in user:', data.user);
+        console.log('Logged in user role:', data.user && data.user.role);
         if (data.success) {
           // Save user data to localStorage
           localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('role', data.user.role);
           if (data.token) {
             localStorage.setItem('token', data.token);
           }
@@ -78,10 +106,13 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
           }
           
           // Redirect based on role
-          if (data.user.role === 'donor') {
-            window.location.href = '/donor-dashboard';
+          if (data.user.role === 'admin' || data.user.role === 'officer') {
+            localStorage.setItem('role', data.user.role); // ensure role is set
+            navigate('/calendar', { replace: true });
+          } else if (data.user.role === 'donor') {
+            navigate('/donor-dashboard', { replace: true });
           } else {
-            window.location.href = '/recipient-dashboard';
+            navigate('/recipient-dashboard', { replace: true });
           }
         } else {
           if (data.message && data.message.toLowerCase().includes('not verified')) {
@@ -115,7 +146,14 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
             <h2>Login to Sharing Excess</h2>
             <button className="close-btn" onClick={onClose}>&times;</button>
           </div>
-          
+          <button
+            type="button"
+            className="login-officer-btn"
+            style={{ marginBottom: 16, background: officerMode ? '#6c757d' : '#28a745', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4 }}
+            onClick={() => setOfficerMode(!officerMode)}
+          >
+            {officerMode ? 'Back to Normal Login' : 'Login as Officer'}
+          </button>
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
@@ -156,6 +194,7 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
                     value="donor"
                     checked={formData.role === 'donor'}
                     onChange={handleChange}
+                    disabled={formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com'}
                   />
                   <span className="role-text">Donor</span>
                 </label>
@@ -166,9 +205,16 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
                     value="recipient"
                     checked={formData.role === 'recipient'}
                     onChange={handleChange}
+                    disabled={formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com'}
                   />
                   <span className="role-text">Recipient</span>
                 </label>
+                {/* Hide role selection for admin/officer */}
+                {(formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com') && (
+                  <div style={{ color: '#28a745', fontWeight: 600, marginTop: 8 }}>
+                    Logging in as <b>{formData.email === 'admin@sharingexcess.com' ? 'Admin' : 'Officer'}</b>
+                  </div>
+                )}
               </div>
               {errors.role && <span className="error-message">{errors.role}</span>}
             </div>
@@ -179,9 +225,9 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
               <button type="submit" className="login-submit-btn">
                 Login
               </button>
-              <a href="/forgot-password" className="forgot-password">
+              <button className="forgot-password-link" onClick={() => setShowForgot(true)} style={{ marginTop: 12, background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', textDecoration: 'underline' }}>
                 Forgot Password?
-              </a>
+              </button>
             </div>
 
             <div className="signup-link">
@@ -199,6 +245,7 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
         onClose={() => setShowVerification(false)}
         onVerified={handleVerified}
       />
+      <ForgotPasswordModal show={showForgot} onClose={() => setShowForgot(false)} />
     </>
   );
 }

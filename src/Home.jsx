@@ -35,20 +35,37 @@ function Home() {
   };
 
   return (
-    <div className="home-bg-wrapper">
-      <div className="home-bg-overlay" />
-      <div className="home-options-container">
-        <h1 className="home-hero-title">
+    <div className="home-bg-wrapper" style={{
+      position: 'relative',
+      minHeight: '100vh',
+      backgroundImage: 'url(/background.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}>
+      {/* Dark overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(20, 30, 20, 0.65)',
+        zIndex: 1
+      }} />
+      <div className="home-bg-overlay" style={{ position: 'relative', zIndex: 2 }} />
+      <div className="home-options-container" style={{ position: 'relative', zIndex: 3 }}>
+        <h1 className="home-hero-title" style={{color: '#fff'}}>
           Reduce Food Waste.<br />
           Feed the Hungry.
         </h1>
-        <p className="home-hero-subtitle">
+        <p className="home-hero-subtitle" style={{color: '#fff'}}>
           Connecting donors and NGOs to ensure excess food reaches those who need it most.
         </p>
         <HomeSlideshow />
         <div className="home-divider" />
         <div className="home-end-options">
-          <h2 className="home-end-title">
+          <h2 className="home-end-title" style={{color: '#fff'}}>
             {user ? (
               <>
                 Welcome back, {user.name}!<br />
@@ -63,14 +80,14 @@ function Home() {
               {user ? (
                 <>
                   <span className="option-icon">🍽️</span>
-                  <span className="option-text">Donate Food</span>
-                  <span className="option-subtitle">List available food items</span>
+                  <span className="option-text" style={{color: '#fff'}}>Donate Food</span>
+                  <span className="option-subtitle" style={{color: '#fff'}}>List available food items</span>
                 </>
               ) : (
                 <>
                   <span className="option-icon">🍽️</span>
-                  <span className="option-text">I want to Donate</span>
-                  <span className="option-subtitle">Share excess food with those in need</span>
+                  <span className="option-text" style={{color: '#fff'}}>I want to Donate</span>
+                  <span className="option-subtitle" style={{color: '#fff'}}>Share excess food with those in need</span>
                 </>
               )}
             </button>
@@ -78,21 +95,21 @@ function Home() {
               {user ? (
                 <>
                   <span className="option-icon">📦</span>
-                  <span className="option-text">Browse Food</span>
-                  <span className="option-subtitle">View available donations</span>
+                  <span className="option-text" style={{color: '#fff'}}>Browse Food</span>
+                  <span className="option-subtitle" style={{color: '#fff'}}>View available donations</span>
                 </>
               ) : (
                 <>
                   <span className="option-icon">📦</span>
-                  <span className="option-text">I want to Receive</span>
-                  <span className="option-subtitle">Find food donations in your area</span>
+                  <span className="option-text" style={{color: '#fff'}}>I want to Receive</span>
+                  <span className="option-subtitle" style={{color: '#fff'}}>Find food donations in your area</span>
                 </>
               )}
             </button>
           </div>
           {user && (
             <div className="user-role-info">
-              <p className="role-info-text">
+              <p className="role-info-text" style={{color: '#fff'}}>
                 You're logged in as a <strong>{user.role}</strong>. 
                 You can access both donation and receiving features.
               </p>

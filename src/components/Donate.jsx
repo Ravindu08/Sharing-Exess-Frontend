@@ -32,21 +32,30 @@ function Donate() {
     }));
   };
 
+<<<<<<< HEAD
   // --- Update handleSubmit to send data and show a styled message ---
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+=======
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+>>>>>>> f648417642e8fb53e5870df3dc090c341595c7a2
     if (!user) {
       alert('You must be logged in to donate.');
       return;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> f648417642e8fb53e5870df3dc090c341595c7a2
     const payload = {
       donor_id: user.id,
       food_name: formData.foodName,
       quantity: formData.quantity,
       expiry_date: formData.expiryDate,
       location: formData.location,
+<<<<<<< HEAD
       // Add more fields here if your backend supports them
     };
 
@@ -64,6 +73,21 @@ function Donate() {
       if (data.success) {
         setSuccessMessage('🎉 Thank you for your donation! We will contact you soon.');
         setTimeout(() => setSuccessMessage(''), 5000); // Hide after 5 seconds
+=======
+      description: formData.description,
+      contact_phone: formData.contactPhone,
+      contact_email: formData.contactEmail
+    };
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/add_listing.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert('Thank you for your donation! We will contact you soon.');
+>>>>>>> f648417642e8fb53e5870df3dc090c341595c7a2
         setFormData({
           foodName: '',
           quantity: '',
@@ -74,11 +98,17 @@ function Donate() {
           contactEmail: ''
         });
       } else {
+<<<<<<< HEAD
         setSuccessMessage('');
         alert('Failed to submit donation: ' + (data.message || 'Unknown error'));
       }
     } catch (error) {
       setSuccessMessage('');
+=======
+        alert(data.message || 'Failed to submit donation.');
+      }
+    } catch (err) {
+>>>>>>> f648417642e8fb53e5870df3dc090c341595c7a2
       alert('Network error. Please try again.');
     }
   };

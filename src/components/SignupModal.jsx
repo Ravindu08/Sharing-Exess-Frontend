@@ -7,7 +7,9 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: '',
+    phone_number: '',
+    location: ''
   });
   const [errors, setErrors] = useState({});
   const [showVerification, setShowVerification] = useState(false);
@@ -31,42 +33,56 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-
+  
     // Name validation
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-
+  
     // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-
+  
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters long';
     }
-
+  
     // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
+  
     // Role validation
     if (!formData.role) {
       newErrors.role = 'Please select a role';
     }
-
+  
+    // Phone number validation
+    if (!formData.phone_number.trim()) {
+      newErrors.phone_number = 'Phone number is required';
+    }
+  
+    // Location validation
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location is required';
+    }
+  
     if (Object.keys(newErrors).length === 0) {
       try {
-        console.log('Attempting to signup with:', { name: formData.name, email: formData.email, role: formData.role });
-        
+        console.log('Attempting to signup with:', {
+          name: formData.name,
+          email: formData.email,
+          role: formData.role
+        });
+  
         const response = await fetch('http://localhost/Sharing%20Excess/backend/signup_with_verification.php', {
           method: 'POST',
           headers: {
@@ -76,25 +92,27 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
             name: formData.name,
             email: formData.email,
             password: formData.password,
-            role: formData.role
+            role: formData.role,
+            phone_number: formData.phone_number,
+            location: formData.location
           })
         });
-
+  
         console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
-
+  
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+  
         const data = await response.json();
         console.log('Response data:', data);
-        
+  
         if (data.success) {
+          localStorage.setItem('username', data.name);
           setSignupEmail(formData.email);
           setShowVerification(true);
         } else {
-          setErrors({ submit: data.message });
+          setErrors({ submit: data.message || 'Signup failed. Please try again.' });
         }
       } catch (error) {
         console.error('Signup error:', error);
@@ -104,6 +122,7 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
       setErrors(newErrors);
     }
   };
+  
 
   const handleVerified = () => {
     setShowVerification(false);
@@ -207,6 +226,33 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
               {errors.role && <span className="error-message">{errors.role}</span>}
             </div>
 
+            <div className="form-group">
+              <label htmlFor="phone_number">Phone Number</label>
+              <input
+                type="text"
+                id="phone_number"
+                name="phone_number"
+                placeholder="Enter your phone number"
+                value={formData.phone_number}
+                onChange={handleChange}
+                className={errors.phone_number ? 'error' : ''}
+              />
+              {errors.phone_number && <span className="error-message">{errors.phone_number}</span>}
+            </div>
+            <div className="form-group">
+              <label htmlFor="location">Location</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                placeholder="Enter your location"
+                value={formData.location}
+                onChange={handleChange}
+                className={errors.location ? 'error' : ''}
+              />
+              {errors.location && <span className="error-message">{errors.location}</span>}
+            </div>
+
             {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
 
             <div className="form-actions">
@@ -227,6 +273,7 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
       <VerificationModal
         isOpen={showVerification}
         email={signupEmail}
+        password={formData.password}
         onClose={() => setShowVerification(false)}
         onVerified={handleVerified}
       />
