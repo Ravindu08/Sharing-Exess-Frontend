@@ -58,6 +58,15 @@ function Navbar() {
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     closeLoginModal();
+    // Save username for display
+    if (userData && userData.name) {
+      setUsername(userData.name);
+      localStorage.setItem('username', userData.name);
+    }
+    // Redirect recipient to dashboard
+    if (userData && userData.role === 'recipient') {
+      navigate('/recipient-dashboard');
+    }
   };
 
   const handleSignupSuccess = (userData) => {
@@ -116,23 +125,14 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    {(() => {
-  const role = (user && user.role) || localStorage.getItem('role') || '';
-  const name = (user && user.name) || '';
-  if (["admin", "officer"].includes(role)) {
-    return (
-      <span className="user-role" style={{fontWeight: 700, color: '#28a745', fontSize: '1.1rem', letterSpacing: '0.5px'}}>
-        {role.charAt(0).toUpperCase() + role.slice(1)}
-      </span>
-    );
-  } else if (name) {
-    return (
-      <span className="user-name">Hello, {name} ({role})</span>
-    );
-  } else {
-    return null;
-  }
-})()}
+                    <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+  Hello {(user && user.name) || username || 'User'}
+  {user && user.role && (
+    <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
+      ({user.role})
+    </span>
+  )}
+</span>
                   </div>
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>

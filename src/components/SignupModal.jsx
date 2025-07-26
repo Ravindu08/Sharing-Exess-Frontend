@@ -83,7 +83,7 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
           role: formData.role
         });
   
-        const response = await fetch('http://localhost/Sharing%20Excess/backend/signup.php', {
+        const response = await fetch('http://localhost/Sharing%20Excess/backend/signup_with_verification.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -14,6 +14,7 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
   const [showVerification, setShowVerification] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [showForgot, setShowForgot] = useState(false);
+  const [officerMode, setOfficerMode] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +33,21 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (officerMode) {
+      if (formData.password === 'admin123') {
+        if (onLoginSuccess) {
+          onLoginSuccess({ role: 'officer', name: 'Officer User', email: 'officer@sharingexcess.com' });
+        }
+        onClose();
+        setTimeout(() => {
+          navigate('/calendar', { replace: true });
+        }, 100);
+        return;
+      } else {
+        setErrors({ password: 'Incorrect password for officer.' });
+        return;
+      }
+    }
     const newErrors = {};
 
     // Email validation
@@ -74,10 +90,12 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
 
         const data = await response.json();
         
+        console.log('Logged in user:', data.user);
+        console.log('Logged in user role:', data.user && data.user.role);
         if (data.success) {
           // Save user data to localStorage
           localStorage.setItem('user', JSON.stringify(data.user));
-localStorage.setItem('role', data.user.role);
+          localStorage.setItem('role', data.user.role);
           if (data.token) {
             localStorage.setItem('token', data.token);
           }
@@ -128,7 +146,14 @@ localStorage.setItem('role', data.user.role);
             <h2>Login to Sharing Excess</h2>
             <button className="close-btn" onClick={onClose}>&times;</button>
           </div>
-          
+          <button
+            type="button"
+            className="login-officer-btn"
+            style={{ marginBottom: 16, background: officerMode ? '#6c757d' : '#28a745', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4 }}
+            onClick={() => setOfficerMode(!officerMode)}
+          >
+            {officerMode ? 'Back to Normal Login' : 'Login as Officer'}
+          </button>
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
