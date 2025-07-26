@@ -14,6 +14,8 @@ function Donate() {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  // --- Add this line for the success message state ---
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
@@ -30,11 +32,55 @@ function Donate() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // --- Update handleSubmit to send data and show a styled message ---
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Donation form submitted:', formData);
-    alert('Thank you for your donation! We will contact you soon.');
+
+    if (!user) {
+      alert('You must be logged in to donate.');
+      return;
+    }
+
+    const payload = {
+      donor_id: user.id,
+      food_name: formData.foodName,
+      quantity: formData.quantity,
+      expiry_date: formData.expiryDate,
+      location: formData.location,
+      // Add more fields here if your backend supports them
+    };
+
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/list_food.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccessMessage('🎉 Thank you for your donation! We will contact you soon.');
+        setTimeout(() => setSuccessMessage(''), 5000); // Hide after 5 seconds
+        setFormData({
+          foodName: '',
+          quantity: '',
+          expiryDate: '',
+          location: '',
+          description: '',
+          contactPhone: '',
+          contactEmail: ''
+        });
+      } else {
+        setSuccessMessage('');
+        alert('Failed to submit donation: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      setSuccessMessage('');
+      alert('Network error. Please try again.');
+    }
   };
 
   return (
@@ -74,6 +120,22 @@ function Donate() {
         {/* Only show form if user is logged in */}
         {user ? (
           <div className="donate-form-container">
+            {/* --- Add this block above the form --- */}
+            {successMessage && (
+              <div className="success-message" style={{
+                background: 'linear-gradient(90deg, #28a745 0%, #20c997 100%)',
+                color: '#fff',
+                padding: '1.2rem',
+                borderRadius: '10px',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+                fontSize: '1.3rem',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 12px rgba(40, 167, 69, 0.15)'
+              }}>
+                {successMessage}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="donate-form">
               <h2 style={{ 
                 color: '#000', 
