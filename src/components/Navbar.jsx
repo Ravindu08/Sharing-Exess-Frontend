@@ -9,12 +9,20 @@ function Navbar() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [username, setUsername] = useState('');
 
   // Check if user is logged in on component mount
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
     }
   }, []);
 
@@ -50,6 +58,15 @@ function Navbar() {
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     closeLoginModal();
+    // Save username for display
+    if (userData && userData.name) {
+      setUsername(userData.name);
+      localStorage.setItem('username', userData.name);
+    }
+    // Redirect recipient to dashboard
+    if (userData && userData.role === 'recipient') {
+      navigate('/recipient-dashboard');
+    }
   };
 
   const handleSignupSuccess = (userData) => {
@@ -108,8 +125,14 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    <span className="user-name">Hello, {user.name}</span>
-                    <span className="user-role">({user.role})</span>
+                    <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+  Hello {(user && user.name) || username || 'User'}
+  {user && user.role && (
+    <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
+      ({user.role})
+    </span>
+  )}
+</span>
                   </div>
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>

@@ -24,7 +24,7 @@ html, body {
 
 /* === Navbar === */
 .custom-navbar {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: linear-gradient(135deg, #4ca728 0%, #20c997 100%);
   box-shadow: 0 8px 32px rgba(40, 167, 69, 0.3);
   padding: 1rem 0;
   backdrop-filter: blur(10px);
@@ -33,7 +33,7 @@ html, body {
 }
 
 .custom-navbar:hover {
-  box-shadow: 0 12px 40px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 12px 40px rgba(48, 56, 13, 0.4);
 }
 
 .brand-text {
@@ -1917,7 +1917,7 @@ html, body {
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
-  background-color: #f5faf7;
+  background-color: #f5faf700;
   width: 100%;
   display: flex;
   flex-direction: column;
