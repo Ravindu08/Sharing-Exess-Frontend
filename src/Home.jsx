@@ -43,29 +43,20 @@ function Home() {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
     }}>
-      {/* Dark overlay */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        background: 'rgba(20, 30, 20, 0.65)',
-        zIndex: 1
-      }} />
+      {/* Removed dark overlay */}
       <div className="home-bg-overlay" style={{ position: 'relative', zIndex: 2 }} />
       <div className="home-options-container" style={{ position: 'relative', zIndex: 3 }}>
-        <h1 className="home-hero-title" style={{color: '#fff'}}>
+        <h1 className="home-hero-title">
           Reduce Food Waste.<br />
           Feed the Hungry.
         </h1>
-        <p className="home-hero-subtitle" style={{color: '#fff'}}>
+        <p className="home-hero-subtitle">
           Connecting donors and NGOs to ensure excess food reaches those who need it most.
         </p>
         <HomeSlideshow />
         <div className="home-divider" />
         <div className="home-end-options">
-          <h2 className="home-end-title" style={{color: '#fff'}}>
+          <h2 className="home-end-title">
             {user ? (
               <>
                 Welcome back, {user.name}!<br />
