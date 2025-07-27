@@ -119,6 +119,11 @@ function Navbar() {
                   <span className="nav-text">About Us</span>
                 </a>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/contact">
+                  <span className="nav-text">Contact Us</span>
+                </Link>
+              </li>
             </ul>
             <div className="navbar-nav">
               {user ? (

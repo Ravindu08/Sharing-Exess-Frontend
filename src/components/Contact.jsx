@@ -46,7 +46,7 @@ function Contact() {
       }}>
         <h2 style={{ textAlign: 'center', color: '#28a745', fontWeight: 900, fontSize: '2.2rem', marginBottom: 18 }}>Contact Us</h2>
         <p style={{ textAlign: 'center', color: '#333', marginBottom: 28 }}>
-          We'd love to hear from you! Fill out the form below or reach us directly at <a href="mailto:info@sharingexcess.com" style={{ color: '#28a745', textDecoration: 'underline' }}>info@sharingexcess.com</a>.
+          We'd love to hear from you! Fill out the form below or reach us directly at <a href="mailto:info@sharingexcess.lk" style={{ color: '#28a745', textDecoration: 'underline' }}>info@sharingexcess.lk</a>.
         </p>
         {submitted ? (
           <div style={{ color: '#28a745', textAlign: 'center', fontWeight: 700, fontSize: '1.1rem', marginBottom: 18 }}>
@@ -109,8 +109,9 @@ function Contact() {
           </form>
         )}
         <div style={{ marginTop: 32, color: '#555', fontSize: '1rem', textAlign: 'center' }}>
-          <div><strong>Phone:</strong> <a href="tel:+1234567890" style={{ color: '#28a745', textDecoration: 'underline' }}>+1 234 567 890</a></div>
-          <div><strong>Address:</strong> 123 Main St, Colombo, Sri Lanka</div>
+          <div><strong>Email:</strong> <a href="mailto:info@sharingexcess.lk" style={{ color: '#28a745', textDecoration: 'underline' }}>info@sharingexcess.lk</a></div>
+          <div><strong>Phone:</strong> <a href="tel:+94771234567" style={{ color: '#28a745', textDecoration: 'underline' }}>+94 77 123 4567</a></div>
+          <div><strong>Address:</strong> Uva Wellassa University, Badulla, Sri Lanka</div>
         </div>
       </div>
     </div>
