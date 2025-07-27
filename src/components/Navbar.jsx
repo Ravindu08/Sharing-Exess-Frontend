@@ -64,8 +64,13 @@ function Navbar() {
       localStorage.setItem('username', userData.name);
     }
     // Redirect recipient to dashboard
-    if (userData && userData.role === 'recipient') {
+    // Redirect admin email to calendar
+    if (userData && userData.email === 'admin@sharingexcess.com') {
+      navigate('/calendar');
+    } else if (userData && userData.role === 'recipient') {
       navigate('/recipient-dashboard');
+    } else if (userData && userData.role === 'donor') {
+      navigate('/donor-dashboard');
     }
   };
 
@@ -125,14 +130,24 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-  Hello {(user && user.name) || username || 'User'}
-  {user && user.role && (
-    <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
-      ({user.role})
-    </span>
-  )}
-</span>
+                    {user && user.email === 'admin@sharingexcess.com' ? (
+  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+    Admin Account
+  </span>
+) : user && user.role === 'admin' ? (
+  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+    Admin
+  </span>
+) : (
+  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+    Hello, {(user && user.name) || username || 'User'}
+    {user && user.role && (
+      <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
+        ({user.role})
+      </span>
+    )}
+  </span>
+)}
                   </div>
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>

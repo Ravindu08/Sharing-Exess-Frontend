@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function VerificationModal({ isOpen, email, password, onClose, onVerified }) {
+function VerificationModal({ isOpen, email, password, role = 'recipient', onClose, onVerified }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -26,7 +26,7 @@ function VerificationModal({ isOpen, email, password, onClose, onVerified }) {
           const loginRes = await fetch('http://localhost/Sharing%20Excess/backend/login.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password, role: 'recipient' })
+            body: JSON.stringify({ email, password, role })
           });
           const loginData = await loginRes.json();
           if (loginData.success) {

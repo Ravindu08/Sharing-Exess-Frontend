@@ -274,6 +274,7 @@ function SignupModal({ isOpen, onClose, onSignupSuccess }) {
         isOpen={showVerification}
         email={signupEmail}
         password={formData.password}
+        role={formData.role}
         onClose={() => setShowVerification(false)}
         onVerified={handleVerified}
       />
