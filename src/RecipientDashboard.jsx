@@ -1,17 +1,47 @@
 import React, { useState, useEffect } from 'react';
 
 function RecipientDashboard() {
+  // ...existing state hooks...
+
+  // Delete food request by id
+  const handleDeleteRequest = async (requestId) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || user.role !== 'recipient') {
+      alert('You must be logged in as a recipient to delete requests.');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to delete this request?')) return;
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/delete_food_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId, recipient_id: user.id })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setMyRequests(myRequests.filter(req => req.id !== requestId));
+        alert('Request deleted successfully.');
+      } else {
+        alert(data.message || 'Failed to delete request.');
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+    }
+  };
+
   const [foodListings, setFoodListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [customRequest, setCustomRequest] = useState({ food_name: '', quantity: '', needed_by: '', location: '' });
   const [myRequests, setMyRequests] = useState([]);
+  const [myDonations, setMyDonations] = useState([]);
   const [requestLoading, setRequestLoading] = useState(false);
 
   useEffect(() => {
     fetchFoodListings();
     fetchMyRequests();
+    fetchMyDonations();
   }, []);
 
   const fetchFoodListings = async () => {
@@ -39,6 +69,18 @@ function RecipientDashboard() {
       const data = await response.json();
       if (data.success) {
         setMyRequests(data.requests || []);
+      }
+    } catch (e) {}
+  };
+
+  const fetchMyDonations = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return;
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_my_donations.php?user_id=' + user.id);
+      const data = await response.json();
+      if (data.success) {
+        setMyDonations(data.donations || []);
       }
     } catch (e) {}
   };
@@ -76,6 +118,26 @@ function RecipientDashboard() {
         alert(data.message || 'Failed to submit request');
       }
     } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  };
+
+  const handleAcceptRequest = async (requestId, userName, userId) => {
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/respond_to_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId, status: 'accepted', user_id: userId, user_name: userName })
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert(data.message);
+        fetchFoodListings();
+        fetchMyRequests();
+      } else {
+        alert(data.message || 'Failed to accept request');
+      }
+    } catch (err) {
       alert('Network error. Please try again.');
     }
   };
@@ -278,13 +340,34 @@ function RecipientDashboard() {
                 <div className="detail-item"><span className="detail-label" style={{ color: '#000', fontWeight: 600 }}>📅 Listed:</span> <span className="detail-value" style={{ color: '#000' }}>{new Date(listing.created_at).toLocaleDateString()}</span></div>
               </div>
               <div className="listing-actions">
-                <button 
-                  onClick={() => handleRequestFood(listing.id, listing.food_name)}
-                  className="request-btn"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
-                >
-                  📝 Request Food
-                </button>
+                {listing.status === 'accepted' ? (
+                  <span className="accepted-badge" style={{ color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 14px', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", fontSize: 16 }}>
+                    Accepted by {listing.accepted_by}
+                  </span>
+                ) : listing.status === 'requested' ? (
+                  <span className="requested-badge" style={{ color: '#fff', background: '#6c757d', borderRadius: 6, padding: '4px 14px', fontWeight: 700, fontFamily: "'Montserrat', sans-serif", fontSize: 16 }}>
+                    Requested
+                  </span>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => handleRequestFood(listing.id, listing.food_name)}
+                      className="request-btn"
+                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      📝 Request Food
+                    </button>
+                    {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
+  <button 
+    onClick={() => handleAcceptRequest(listing.request_id, JSON.parse(localStorage.getItem('user')).name, JSON.parse(localStorage.getItem('user')).id)}
+    className="accept-btn"
+    style={{ marginLeft: 8, fontFamily: "'Montserrat', sans-serif", background: '#28a745', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 14px', fontWeight: 700, fontSize: 16 }}
+  >
+    Accept
+  </button>
+) }
+                  </>
+                )}
                 <button 
                   onClick={() => window.open(`https://maps.google.com/?q=${listing.location}`, '_blank')}
                   className="location-btn"
@@ -297,36 +380,68 @@ function RecipientDashboard() {
           ))}
         </div>
       )}
-      <h3 style={{marginTop: 32}}>My Food Requests</h3>
-      {myRequests.length === 0 ? (
-        <div className="no-requests">
-          <p>You have not made any food requests yet.</p>
-        </div>
-      ) : (
-        <div className="dashboard-listings">
-          {myRequests.map((req) => (
-            <div key={req.id} className="dashboard-card">
-              <div className="food-header">
-                <strong className="food-name">{req.food_name}</strong>
-                <span className="quantity-badge">{req.quantity}</span>
-              </div>
-              <div className="food-details">
-                <div className="detail-item">
-                  <span className="detail-label">📅 Needed by:</span>
-                  <span className="detail-value">{req.needed_by}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">📍 Location:</span>
-                  <span className="detail-value">{req.location}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label">🗓️ Requested:</span>
-                  <span className="detail-value">{new Date(req.created_at).toLocaleDateString()}</span>
-                </div>
-              </div>
+      {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
+        <>
+          <h3 style={{marginTop: 32}}>My Food Requests</h3>
+          {myRequests.length === 0 ? (
+            <div className="no-requests">
+              <p>You have not made any food requests yet.</p>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="dashboard-listings">
+              {myRequests.map((req) => (
+                <div key={req.id} className="dashboard-card">
+                  <div className="food-header">
+                    <strong className="food-name">{req.food_item || req.food_name}</strong>
+                    <span className="quantity-badge">{req.quantity}</span>
+                    <button 
+                      className="delete-btn" 
+                      style={{marginLeft: 12, color: '#fff', background: '#dc3545', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif"}}
+                      onClick={() => handleDeleteRequest(req.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div className="food-details">
+                    <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{req.needed_by}</span></div>
+                    <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{req.location}</span></div>
+                    <div className="detail-item"><span className="detail-label">🗓️ Requested:</span> <span className="detail-value">{new Date(req.created_at).toLocaleDateString()}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+      {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
+        <>
+          <h3 style={{marginTop: 32}}>My Donations (Accepted Requests)</h3>
+          {myDonations.length === 0 ? (
+            <div className="no-requests">
+              <p>You have not accepted any food requests yet.</p>
+            </div>
+          ) : (
+            <div className="dashboard-listings">
+              {myDonations.map((don) => (
+                <div key={don.id} className="dashboard-card">
+                  <div className="food-header">
+                    <strong className="food-name">{don.food_name}</strong>
+                    <span className="quantity-badge">{don.quantity}</span>
+                    <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
+                      Accepted by {don.accepted_by}
+                    </span>
+                  </div>
+                  <div className="food-details">
+                    <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{don.needed_by}</span></div>
+                    <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
+                    <div className="detail-item"><span className="detail-label">🗓️ Accepted:</span> <span className="detail-value">{don.updated_at ? new Date(don.updated_at).toLocaleDateString() : ''}</span></div>
+                    <div className="detail-item"><span className="detail-label">Donor:</span> <span className="detail-value">{don.donor_name || '-'}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
       {showRequestModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
