@@ -14,6 +14,8 @@ function Donate() {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  // --- Add this line for the success message state ---
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
@@ -30,6 +32,7 @@ function Donate() {
     }));
   };
 
+  // --- Update handleSubmit to send data and show a styled message ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -54,7 +57,8 @@ function Donate() {
       });
       const data = await response.json();
       if (data.success) {
-        alert('Thank you for your donation! We will contact you soon.');
+        setSuccessMessage('🎉 Thank you for your donation! We will contact you soon.');
+        setTimeout(() => setSuccessMessage(''), 5000); // Hide after 5 seconds
         setFormData({
           foodName: '',
           quantity: '',
@@ -65,9 +69,11 @@ function Donate() {
           contactEmail: ''
         });
       } else {
-        alert(data.message || 'Failed to submit donation.');
+        setSuccessMessage('');
+        alert('Failed to submit donation: ' + (data.message || 'Unknown error'));
       }
-    } catch (err) {
+    } catch (error) {
+      setSuccessMessage('');
       alert('Network error. Please try again.');
     }
   };
@@ -109,6 +115,22 @@ function Donate() {
         {/* Only show form if user is logged in */}
         {user ? (
           <div className="donate-form-container">
+            {/* --- Add this block above the form --- */}
+            {successMessage && (
+              <div className="success-message" style={{
+                background: 'linear-gradient(90deg, #28a745 0%, #20c997 100%)',
+                color: '#fff',
+                padding: '1.2rem',
+                borderRadius: '10px',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+                fontSize: '1.3rem',
+                fontWeight: 'bold',
+                boxShadow: '0 4px 12px rgba(40, 167, 69, 0.15)'
+              }}>
+                {successMessage}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="donate-form">
               <h2 style={{ 
                 color: '#000', 

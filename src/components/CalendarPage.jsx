@@ -28,13 +28,19 @@ function CalendarPage() {
   }, [date, events]);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e9f5ec 100%)', padding: 40 }}>
+    <div style={{
+      minHeight: '100vh',
+      backgroundImage: "url(/background.jpg)",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      padding: 40
+    }}>
       <h2 style={{ textAlign: 'center', color: '#28a745', fontWeight: 900, fontSize: '2.5rem', marginBottom: 32 }}>Calendar</h2>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Calendar
           onChange={setDate}
           value={date}
-      
         />
         <div style={{ marginTop: 32, width: '100%', maxWidth: 500 }}>
           <h3 style={{ color: '#222', fontWeight: 700, fontSize: '1.3rem', marginBottom: 12 }}>
@@ -49,57 +55,55 @@ function CalendarPage() {
                   {event.title} ({event.location})
                   <br />
                   <span style={{
-  color:
-    event.status === 'picked_up' ? '#007bff' :
-    event.status === 'delivering' ? '#ff9800' :
-    event.status === 'delivered' ? '#28a745' : '#555',
-  fontWeight: 600,
-  fontSize: '0.95rem',
-  letterSpacing: '0.5px'
-}}>
-  Status: {event.status === 'picked_up' ? 'Quality Checked' : event.status.charAt(0).toUpperCase() + event.status.slice(1)}
-</span>
+                    color:
+                      event.status === 'picked_up' ? '#007bff' :
+                      event.status === 'delivering' ? '#ff9800' :
+                      event.status === 'delivered' ? '#28a745' : '#555',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Status: {event.status === 'picked_up' ? 'Quality Checked' : event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                  </span>
                   {/* Officer/Admin status update UI */}
                   {(() => {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const allowedEmails = ['admin@sharingexcess.com', 'officer@sharingexcess.com'];
-  if (user && allowedEmails.includes(user.email)) {
-    return (
-      <div style={{ display: 'inline-block', marginLeft: 10 }}>
-        {['picked_up', 'delivering', 'delivered'].map(option => (
-          <label key={option} style={{ marginRight: 12, fontWeight: 400, color: '#333', fontSize: '0.95rem' }}>
-            <input
-              type="radio"
-              name={`status-${event.id}`}
-              value={option}
-              checked={event.status === option}
-              onChange={async (e) => {
-                const newStatus = e.target.value;
-                await fetch('http://localhost/Sharing%20Excess/backend/update_delivery_status.php', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ id: event.id, status: newStatus })
-                });
-                // Refresh events
-                fetch('http://localhost/Sharing%20Excess/backend/get_calendar_events.php')
-                  .then(res => res.json())
-                  .then(data => {
-                    if (data.success) setEvents(data.events);
-                  });
-              }}
-            />
-            {option === 'picked_up' && 'Quality Checked'}
-            {option === 'delivering' && 'Delivering'}
-            {option === 'delivered' && 'Delivered'}
-          </label>
-        ))}
-      </div>
-    );
-  }
-  return null;
-})()}
-
-                  
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    const allowedEmails = ['admin@sharingexcess.com', 'officer@sharingexcess.com'];
+                    if (user && allowedEmails.includes(user.email)) {
+                      return (
+                        <div style={{ display: 'inline-block', marginLeft: 10 }}>
+                          {['picked_up', 'delivering', 'delivered'].map(option => (
+                            <label key={option} style={{ marginRight: 12, fontWeight: 400, color: '#333', fontSize: '0.95rem' }}>
+                              <input
+                                type="radio"
+                                name={`status-${event.id}`}
+                                value={option}
+                                checked={event.status === option}
+                                onChange={async (e) => {
+                                  const newStatus = e.target.value;
+                                  await fetch('http://localhost/Sharing%20Excess/backend/update_delivery_status.php', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: event.id, status: newStatus })
+                                  });
+                                  // Refresh events
+                                  fetch('http://localhost/Sharing%20Excess/backend/get_calendar_events.php')
+                                    .then(res => res.json())
+                                    .then(data => {
+                                      if (data.success) setEvents(data.events);
+                                    });
+                                }}
+                              />
+                              {option === 'picked_up' && 'Quality Checked'}
+                              {option === 'delivering' && 'Delivering'}
+                              {option === 'delivered' && 'Delivered'}
+                            </label>
+                          ))}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </li>
               ))}
             </ul>
