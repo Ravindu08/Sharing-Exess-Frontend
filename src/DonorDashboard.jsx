@@ -162,29 +162,6 @@ function DonorDashboard() {
       }}>
         Food Requests
       </h2>
-      <div className="food-requests-list" style={{ marginBottom: '2rem' }}>
-  {foodRequests.length === 0 ? (
-    <div>No food requests available.</div>
-  ) : (
-    foodRequests.map(req => (
-      <div key={req.id} className="request-card" style={{
-        background: '#fff',
-        border: '1px solid #e0e0e0',
-        borderRadius: 8,
-        marginBottom: 12,
-        padding: 16,
-        boxShadow: '0 2px 8px rgba(40,167,69,0.06)'
-      }}>
-        <div><b>Food:</b> {req.food_item}</div>
-        <div><b>Quantity:</b> {req.quantity}</div>
-        <div><b>Needed by:</b> {req.needed_by}</div>
-        <div><b>Location:</b> {req.location}</div>
-        <div><b>Status:</b> {req.status}</div>
-        <div><b>Recipient:</b> {req.recipient_name}</div>
-      </div>
-    ))
-  )}
-</div>
       <div className="dashboard-header">
         <p style={{ 
           color: '#000', 
