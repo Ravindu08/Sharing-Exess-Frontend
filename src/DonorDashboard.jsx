@@ -12,32 +12,33 @@ function DonorDashboard() {
   }, []);
 
   const fetchFoodRequests = async () => {
+    setLoading(true);
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/get_requests.php');
       const data = await response.json();
-      
       if (data.success) {
         setFoodRequests(data.requests);
-      } else {
-        setError(data.message || 'Failed to fetch food requests');
       }
     } catch (error) {
-      setError('Network error. Please try again.');
+      // Optionally set error state here
     } finally {
       setLoading(false);
     }
   };
-
+  
   const fetchMyDonations = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || user.role !== 'donor') return;
+    setLoading(true);
     try {
-      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php?donor_id=' + user.id);
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php');
       const data = await response.json();
       if (data.success) {
-        setMyDonations(data.donations || []);
+        setMyDonations(data.donations);
       }
-    } catch (e) {}
+    } catch (error) {
+      // Optionally set error state here
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRespondToRequest = async (requestId, status) => {
@@ -161,6 +162,29 @@ function DonorDashboard() {
       }}>
         Food Requests
       </h2>
+      <div className="food-requests-list" style={{ marginBottom: '2rem' }}>
+  {foodRequests.length === 0 ? (
+    <div>No food requests available.</div>
+  ) : (
+    foodRequests.map(req => (
+      <div key={req.id} className="request-card" style={{
+        background: '#fff',
+        border: '1px solid #e0e0e0',
+        borderRadius: 8,
+        marginBottom: 12,
+        padding: 16,
+        boxShadow: '0 2px 8px rgba(40,167,69,0.06)'
+      }}>
+        <div><b>Food:</b> {req.food_item}</div>
+        <div><b>Quantity:</b> {req.quantity}</div>
+        <div><b>Needed by:</b> {req.needed_by}</div>
+        <div><b>Location:</b> {req.location}</div>
+        <div><b>Status:</b> {req.status}</div>
+        <div><b>Recipient:</b> {req.recipient_name}</div>
+      </div>
+    ))
+  )}
+</div>
       <div className="dashboard-header">
         <p style={{ 
           color: '#000', 
@@ -241,41 +265,68 @@ function DonorDashboard() {
       ) : (
         <div className="dashboard-listings">
           {myDonations.map((don) => (
-            <div key={don.id} className="dashboard-card">
-              <div className="food-header">
-                <strong className="food-name">{don.food_name}</strong>
-                <span className="quantity-badge">{don.quantity}</span>
-                <span className="status-badge" style={{marginLeft: 8, color: '#fff', background: don.status === 'accepted' ? '#28a745' : don.status === 'requested' ? '#6c757d' : '#007bff', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
-                  {don.status.charAt(0).toUpperCase() + don.status.slice(1)}
-                </span>
-                {don.accepted_by && (
-                  <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
-                    Accepted by {don.accepted_by}
-                  </span>
-                )}
-              </div>
-              <div className="food-details">
-                <div className="detail-item"><span className="detail-label">📅 Expiry:</span> <span className="detail-value">{don.expiry_date}</span></div>
-                <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
-                <div className="detail-item"><span className="detail-label">🗓️ Listed:</span> <span className="detail-value">{new Date(don.created_at).toLocaleDateString()}</span></div>
-                <div className="detail-item"><span className="detail-label">Total Requests:</span> <span className="detail-value">{don.total_requests}</span></div>
-                {/* Accepted Requests Section */}
-                {don.requests && don.requests.length > 0 && (
-                  <div className="accepted-requests" style={{ marginTop: 12, background: '#eaffea', borderRadius: 8, padding: '10px 14px' }}>
-                    <strong style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif" }}>Accepted Requests:</strong>
-                    <ul style={{ margin: 0, paddingLeft: 18 }}>
-                      {don.requests.map((req) => (
-                        <li key={req.id} style={{ marginBottom: 6, color: '#222', fontFamily: "'Montserrat', sans-serif" }}>
-                          <span style={{ fontWeight: 600 }}>{req.recipient_name}</span> &times; {req.quantity} for <span style={{ fontWeight: 600 }}>{req.needed_by}</span> <br/>
-                          <span style={{ color: '#28a745' }}>Accepted on: {new Date(req.accepted_at).toLocaleDateString()}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+  don.id === 'custom' ? (
+    <div key="custom-requests" className="dashboard-card" style={{ background: '#f8f9fa', border: '2px solid #28a745', borderRadius: '12px', marginBottom: '1.5rem', padding: '1.5rem' }}>
+      <div className="food-header">
+        <strong className="food-name" style={{ color: '#28a745', fontSize: '1.2rem' }}>Accepted Custom Requests</strong>
+        <span className="quantity-badge">{don.total_requests}</span>
+      </div>
+      <div className="food-details">
+        {don.requests && don.requests.length > 0 ? (
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {don.requests.map((req) => (
+              <li key={req.id} style={{ marginBottom: 12, color: '#222', fontFamily: "'Montserrat', sans-serif", background: '#fff', borderRadius: 6, padding: '10px 12px', border: '1px solid #e0e0e0' }}>
+                <div><b>Recipient:</b> {req.recipient_name || 'Unknown'}</div>
+                <div><b>Food:</b> {req.food_name}</div>
+                <div><b>Quantity:</b> {req.quantity}</div>
+                <div><b>Needed by:</b> {req.needed_by}</div>
+                <div><b>Location:</b> {req.location}</div>
+                <div><b>Accepted on:</b> {req.accepted_at ? new Date(req.accepted_at).toLocaleDateString() : ''}</div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>No accepted custom requests.</div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div key={don.id} className="dashboard-card">
+      <div className="food-header">
+        <strong className="food-name">{don.food_name}</strong>
+        <span className="quantity-badge">{don.quantity}</span>
+        <span className="status-badge" style={{marginLeft: 8, color: '#fff', background: don.status === 'accepted' ? '#28a745' : don.status === 'requested' ? '#6c757d' : '#007bff', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
+          {don.status.charAt(0).toUpperCase() + don.status.slice(1)}
+        </span>
+        {don.accepted_by && (
+          <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
+            Accepted by {don.accepted_by}
+          </span>
+        )}
+      </div>
+      <div className="food-details">
+        <div className="detail-item"><span className="detail-label">📅 Expiry:</span> <span className="detail-value">{don.expiry_date}</span></div>
+        <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
+        <div className="detail-item"><span className="detail-label">🗓️ Listed:</span> <span className="detail-value">{new Date(don.created_at).toLocaleDateString()}</span></div>
+        <div className="detail-item"><span className="detail-label">Total Requests:</span> <span className="detail-value">{don.total_requests}</span></div>
+        {/* Accepted Requests Section */}
+        {don.requests && don.requests.length > 0 && (
+          <div className="accepted-requests" style={{ marginTop: 12, background: '#eaffea', borderRadius: 8, padding: '10px 14px' }}>
+            <strong style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif" }}>Accepted Requests:</strong>
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
+              {don.requests.map((req) => (
+                <li key={req.id} style={{ marginBottom: 6, color: '#222', fontFamily: "'Montserrat', sans-serif" }}>
+                  <span style={{ fontWeight: 600 }}>{req.recipient_name}</span> &times; {req.quantity} for <span style={{ fontWeight: 600 }}>{req.needed_by}</span> <br/>
+                  <span style={{ color: '#28a745' }}>Accepted on: {new Date(req.accepted_at).toLocaleDateString()}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+))}
         </div>
       )}
     </div>
