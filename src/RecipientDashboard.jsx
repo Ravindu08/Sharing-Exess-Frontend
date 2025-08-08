@@ -450,16 +450,49 @@ function RecipientDashboard() {
             <h2 style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif", fontWeight: 900, fontSize: '2rem', textAlign: 'center', marginBottom: 24 }}>Request Custom Food</h2>
             <form onSubmit={handleCustomRequestSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               <div className="form-group">
-                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Food Name:</label>
-                <input type="text" name="food_name" value={customRequest.food_name} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
-              </div>
-              <div className="form-group">
-                <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Quantity:</label>
-                <input type="text" name="quantity" value={customRequest.quantity} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
-              </div>
+  <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Food Type:</label>
+  <select
+    name="food_name"
+    value={customRequest.food_name}
+    onChange={handleCustomRequestChange}
+    required
+    style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }}
+  >
+    <option value="">Select food type</option>
+    <option value="Rice">Rice</option>
+    <option value="Bread">Bread</option>
+    <option value="Noodles">Noodles</option>
+    <option value="Vegetables">Vegetables</option>
+    <option value="Fruits">Fruits</option>
+    <option value="Snacks">Snacks</option>
+  </select>
+</div>
+<div className="form-group">
+  <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Quantity (for how many people):</label>
+  <input
+    type="number"
+    name="quantity"
+    value={customRequest.quantity}
+    onChange={handleCustomRequestChange}
+    min={1}
+    step={1}
+    pattern="\\d*"
+    required
+    style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }}
+    inputMode="numeric"
+  />
+</div>
               <div className="form-group">
                 <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Needed By:</label>
-                <input type="date" name="needed_by" value={customRequest.needed_by} onChange={handleCustomRequestChange} required style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }} />
+                <input
+  type="date"
+  name="needed_by"
+  value={customRequest.needed_by}
+  onChange={handleCustomRequestChange}
+  required
+  min={new Date().toISOString().split('T')[0]}
+  style={{ width: '100%', marginBottom: 0, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontFamily: "'Montserrat', sans-serif" }}
+/>
               </div>
               <div className="form-group">
                 <label style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, color: '#000', marginBottom: 4 }}>Location:</label>
