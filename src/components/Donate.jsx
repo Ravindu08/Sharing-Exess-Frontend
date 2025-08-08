@@ -23,6 +23,7 @@ function Donate() {
       setUser(JSON.parse(loggedInUser));
     }
   }, []);
+  const normalizedRole = (user && user.role ? String(user.role).toLowerCase() : '');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,6 +38,10 @@ function Donate() {
     e.preventDefault();
     if (!user) {
       alert('You must be logged in to donate.');
+      return;
+    }
+    if (normalizedRole !== 'donor') {
+      alert('Only donors can submit donations. You are logged in as ' + (user.role || 'a user') + '.');
       return;
     }
     const payload = {
@@ -88,32 +93,16 @@ function Donate() {
     }}>
       <div className="donate-container">
         <div className="donate-hero">
-          <h1 style={{ 
-            color: '#000', 
-            textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '2.5rem',
-            fontWeight: '900',
-            marginBottom: '1rem',
-            textAlign: 'center'
-          }}>
+          <h1 className="donate-hero-title">
             Donate Food
           </h1>
-          <p style={{ 
-            color: '#000', 
-            textShadow: '1px 1px 6px rgba(255,255,255,0.8)', 
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: '1.2rem',
-            textAlign: 'center',
-            maxWidth: '600px',
-            margin: '0 auto 2rem auto'
-          }}>
+          <p className="donate-hero-subtitle">
             Share your excess food with those who need it most. Your donation can make a real difference in someone's life.
           </p>
         </div>
 
-        {/* Only show form if user is logged in */}
-        {user ? (
+        {/* Only show form if user is logged in as donor */}
+        {user && normalizedRole === 'donor' ? (
           <div className="donate-form-container">
             {/* --- Add this block above the form --- */}
             {successMessage && (
@@ -262,17 +251,35 @@ function Donate() {
           </div>
         ) : (
           <div className="donate-form-container" style={{ textAlign: 'center', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <h2 style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '1.5rem' }}>
-              Please sign in to submit a donation
-            </h2>
-            <p style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '2rem' }}>
-              You must be logged in to donate food. If you don't have an account, please sign up first.
-            </p>
-            <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-              <a href="/" className="submit-btn" style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)', color: '#fff', textDecoration: 'none', fontFamily: "'Montserrat', sans-serif" }}>
-                Go to Home
-              </a>
-            </div>
+            {user ? (
+              <>
+                <h2 style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '1.5rem' }}>
+                  Only donors can submit donations
+                </h2>
+                <p style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '2rem' }}>
+                  You are logged in as <strong>{user.role}</strong>. Please use the Request page instead.
+                </p>
+                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+                  <a href="/request" className="submit-btn" style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)', color: '#fff', textDecoration: 'none', fontFamily: "'Montserrat', sans-serif" }}>
+                    Go to Request
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '1.5rem' }}>
+                  Please sign in to submit a donation
+                </h2>
+                <p style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '2rem' }}>
+                  You must be logged in to donate food. If you don't have an account, please sign up first.
+                </p>
+                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
+                  <a href="/" className="submit-btn" style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)', color: '#fff', textDecoration: 'none', fontFamily: "'Montserrat', sans-serif" }}>
+                    Go to Home
+                  </a>
+                </div>
+              </>
+            )}
           </div>
         )}
 

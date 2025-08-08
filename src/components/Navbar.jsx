@@ -110,6 +110,11 @@ function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/request">
+                  <span className="nav-text">Request</span>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/ngos">
                   <span className="nav-text">NGOs</span>
                 </Link>
