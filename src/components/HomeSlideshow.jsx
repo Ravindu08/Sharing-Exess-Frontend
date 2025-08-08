@@ -4,7 +4,7 @@ import './HomeSlideshow.css'; // Add this import for custom styles
 
 function HomeSlideshow() {
   return (
-    <div style={{ maxWidth: 600, margin: '32px auto', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(40,167,69,0.10)' }}>
+    <div style={{ maxWidth: 480, margin: '32px auto', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 24px rgba(40,167,69,0.10)' }}>
       <Carousel
         autoPlay
         infiniteLoop

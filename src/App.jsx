@@ -14,6 +14,7 @@ import Donate from './components/Donate.jsx';
 import FoodDonationsDashboard from './components/FoodDonationsDashboard.jsx';
 import CalendarPage from './components/CalendarPage.jsx';
 import Contact from './components/Contact.jsx';
+import Request from './components/Request.jsx';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/ngos" element={<NGOs />} />
               <Route path="/donate" element={<Donate />} />
+              <Route path="/request" element={<Request />} />
               <Route path="/food-donations" element={<FoodDonationsDashboard />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/contact" element={<Contact />} />

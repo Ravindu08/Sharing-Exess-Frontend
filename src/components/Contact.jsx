@@ -25,19 +25,15 @@ function Contact() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: 40
     }}>
       <div style={{
-        background: 'rgba(255,255,255,0.95)',
+        background: 'transparent',
         borderRadius: 16,
-        boxShadow: '0 4px 24px rgba(40, 167, 69, 0.10)',
+        boxShadow: 'none',
         maxWidth: 480,
         width: '100%',
         padding: '36px 28px',

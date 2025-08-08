@@ -1393,12 +1393,12 @@ html, body {
 /* Home Options Styles */
 .home-bg-wrapper {
   position: relative;
-  min-height: 60vh;
+  min-height: 80vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('/background.jpg') no-repeat center center/cover;
+  background: transparent; /* use global background from .main-background */
   z-index: 1;
 }
 
@@ -1568,7 +1568,7 @@ html, body {
 
 .home-end-options {
   margin-top: 12px;
-  text-align: left;
+  text-align: center;
 }
 
 .home-end-title {
@@ -1697,6 +1697,11 @@ html, body {
 }
 
 /* Enhanced dashboard card for food listings */
+
+.home-end-title {
+  text-align: center !important;
+}
+
 .dashboard-card {
   background: white;
   border-radius: 15px;
@@ -1792,6 +1797,8 @@ html, body {
 }
 
 .user-role-info {
+  text-align: center;
+
   margin-top: 20px;
   padding: 15px;
   background: rgba(255, 255, 255, 0.1);
@@ -1913,8 +1920,8 @@ html, body {
 
 .main-background {
   background-image: url('/background.jpg');
-  background-size: contain;
-  background-position: center;
+  background-size: cover;
+  background-position: center center;
   background-repeat: no-repeat;
   min-height: 100vh;
   background-color: #f5faf700;
@@ -1934,6 +1941,7 @@ html, body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center; /* center content horizontally on all pages */
 }
 
 /* Add or update these rules for a darker hover effect */
@@ -1950,3 +1958,78 @@ html, body {
 }
 
 /* For Home and NGOs if you want to target them specifically, add a class or use nth-child selectors if needed */
+
+.option-text, .option-subtitle {
+  color: #fff !important;
+}
+
+.slideshow-spacing {
+  margin-top: 120px;
+}
+
+.home-hero-title,
+.home-hero-subtitle,
+.home-end-title {
+  color: #fff !important;
+  text-align: justify;
+}
+
+.impact-section {
+  background: #181c1f;
+  color: #fff;
+  padding: 60px 0 60px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.impact-content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.impact-counter {
+  margin-bottom: 24px;
+}
+
+.impact-number {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: #222;
+  border-radius: 12px;
+  padding: 16px 32px;
+  display: inline-block;
+  box-shadow: 0 4px 24px rgba(40,167,69,0.10);
+}
+
+.impact-label {
+  display: block;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: #28a745;
+  font-weight: 700;
+}
+
+.impact-description {
+  font-size: 1.1rem;
+  margin-bottom: 32px;
+  color: #fff;
+}
+
+.impact-btn {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 12px rgba(40,167,69,0.10);
+}
+.impact-btn:hover {
+  background: #218838;
+}
