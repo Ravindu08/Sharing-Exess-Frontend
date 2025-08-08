@@ -96,13 +96,7 @@ const cooperations = [
 ];
 
 const NGOs = () => (
-  <div className="ngos-page" style={{
-    backgroundImage: "url(/background.jpg)",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    minHeight: "100vh"
-  }}>
+  <div className="ngos-page">
     <section className="ngos-hero">
       <img src="/volunteer-hero.jpg" alt="Volunteers" className="ngos-hero-img" style={{ width: '600px', maxWidth: '98vw' }} />
       <div className="ngos-hero-content">

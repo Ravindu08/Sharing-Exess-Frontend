@@ -104,7 +104,7 @@ function Home() {
           </div>
           </div>
         </div>
-        <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ marginTop: '0px', display: 'flex', justifyContent: 'center' }}>
           <div className="home-slideshow-smaller">
             <HomeSlideshow />
           </div>

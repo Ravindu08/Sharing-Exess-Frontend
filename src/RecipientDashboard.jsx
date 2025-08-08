@@ -192,13 +192,7 @@ function RecipientDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -226,13 +220,7 @@ function RecipientDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -263,13 +251,7 @@ function RecipientDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
+    <div className="dashboard-container">
       <h2 style={{ 
         color: '#000', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 

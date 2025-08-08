@@ -20,6 +20,7 @@ function App() {
   return (
     <Router>
       <div className="app-root">
+        <div className="global-bg" aria-hidden="true" />
         <Navbar />
         <div className="main-background">
           <div className="app-content">

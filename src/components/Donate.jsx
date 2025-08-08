@@ -84,13 +84,7 @@ function Donate() {
   };
 
   return (
-    <div className="donate-page" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
+    <div className="donate-page">
       <div className="donate-container">
         <div className="donate-hero">
           <h1 className="donate-hero-title">
