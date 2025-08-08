@@ -29,8 +29,19 @@ function DonorDashboard() {
   const fetchMyDonations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php');
+      const user = JSON.parse(localStorage.getItem('user'));
+      console.log("User from localStorage:", user); // Debug user object
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          donor_id: user && user.id
+        }),
+      });
       const data = await response.json();
+      console.log("Full backend response:", data);
       if (data.success) {
         setMyDonations(data.donations);
       }
@@ -40,6 +51,7 @@ function DonorDashboard() {
       setLoading(false);
     }
   };
+      
 
   const handleRespondToRequest = async (requestId, status) => {
     try {
