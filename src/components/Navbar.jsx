@@ -10,6 +10,17 @@ function Navbar() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
+  const getEffectiveRole = () => {
+    const fromState = user && user.role ? String(user.role).toLowerCase() : '';
+    if (fromState) return fromState;
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser && storedUser.role) return String(storedUser.role).toLowerCase();
+    } catch {}
+    const fromKey = localStorage.getItem('role');
+    return fromKey ? String(fromKey).toLowerCase() : '';
+  };
+  const effectiveRole = getEffectiveRole();
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -63,10 +74,9 @@ function Navbar() {
       setUsername(userData.name);
       localStorage.setItem('username', userData.name);
     }
-    // Redirect recipient to dashboard
-    // Redirect admin email to calendar
-    if (userData && userData.email === 'admin@sharingexcess.com') {
-      navigate('/calendar');
+    // Redirects after login
+    if (userData && (userData.role === 'officer' || userData.role === 'admin')) {
+      navigate('/officer');
     } else if (userData && userData.role === 'recipient') {
       navigate('/recipient-dashboard');
     } else if (userData && userData.role === 'donor') {
@@ -124,6 +134,7 @@ function Navbar() {
                   <span className="nav-text">Calendar</span>
                 </Link>
               </li>
+              {/* Officer button only in user section below name */}
               <li className="nav-item">
                 <a className="nav-link" href="/about">
                   <span className="nav-text">About Us</span>
@@ -159,6 +170,13 @@ function Navbar() {
   </span>
 )}
                   </div>
+                  {(effectiveRole === 'officer' || effectiveRole === 'admin') && (
+                    <Link className="nav-link officer-btn" to="/officer" style={{
+                      background: '#28a745', color: '#fff', borderRadius: 6, padding: '6px 12px', marginLeft: 8, marginTop: 6, display: 'inline-block'
+                    }}>
+                      <span className="nav-text">Officer Dashboard</span>
+                    </Link>
+                  )}
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>
                   </button>
@@ -194,4 +212,4 @@ function Navbar() {
   );
 }
 
-export default Navbar; 
+export default Navbar;

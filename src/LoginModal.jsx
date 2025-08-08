@@ -68,9 +68,10 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
               : (`officer ${officerData.id || ''}`).trim()
           };
           localStorage.setItem('user', JSON.stringify(officerUser));
+          localStorage.setItem('role', 'officer');
           if (onLoginSuccess) onLoginSuccess(officerUser);
           onClose();
-          navigate('/calendar', { replace: true });
+          navigate('/officer', { replace: true });
         } else {
           setErrors({ submit: data.message || 'Invalid officer credentials' });
         }
@@ -146,8 +147,10 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
           }
           // Close modal and navigate only on success
           onClose();
-          if (data.user.role === 'admin' || data.user.role === 'officer') {
-            localStorage.setItem('role', data.user.role); // ensure role is set
+          localStorage.setItem('role', data.user.role);
+          if (data.user.role === 'officer') {
+            navigate('/officer', { replace: true });
+          } else if (data.user.role === 'admin') {
             navigate('/calendar', { replace: true });
           } else if (data.user.role === 'donor') {
             navigate('/donor-dashboard', { replace: true });

@@ -1931,6 +1931,11 @@ html, body {
   flex: 1;
 }
 
+.main-background.no-bg {
+  background-image: none !important;
+  background: #f8f9fa !important;
+}
+
 .app-root {
   min-height: 100vh;
   display: flex;
