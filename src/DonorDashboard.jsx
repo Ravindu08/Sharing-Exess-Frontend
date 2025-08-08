@@ -29,7 +29,16 @@ function DonorDashboard() {
   const fetchMyDonations = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php');
+      const user = JSON.parse(localStorage.getItem('user'));
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          donor_id: user.id
+        }),
+      });
       const data = await response.json();
       if (data.success) {
         setMyDonations(data.donations);
@@ -73,13 +82,7 @@ function DonorDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -107,13 +110,7 @@ function DonorDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -144,13 +141,7 @@ function DonorDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
+    <div className="dashboard-container">
       <h2 style={{ 
         color: '#000', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
