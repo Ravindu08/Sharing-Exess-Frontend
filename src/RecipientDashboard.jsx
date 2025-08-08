@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FeedbackForm from './components/FeedbackForm';
 
 function RecipientDashboard() {
   // ...existing state hooks...
@@ -394,19 +395,33 @@ function RecipientDashboard() {
                   <div className="food-header">
                     <strong className="food-name">{req.food_item || req.food_name}</strong>
                     <span className="quantity-badge">{req.quantity}</span>
-                    <button 
-                      className="delete-btn" 
-                      style={{marginLeft: 12, color: '#fff', background: '#dc3545', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif"}}
-                      onClick={() => handleDeleteRequest(req.id)}
-                    >
-                      Delete
-                    </button>
+                    {req.status !== 'delivered' && (
+                      <button 
+                        className="delete-btn" 
+                        style={{marginLeft: 12, color: '#fff', background: '#dc3545', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif"}}
+                        onClick={() => handleDeleteRequest(req.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                   <div className="food-details">
                     <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{req.needed_by}</span></div>
                     <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{req.location}</span></div>
                     <div className="detail-item"><span className="detail-label">🗓️ Requested:</span> <span className="detail-value">{new Date(req.created_at).toLocaleDateString()}</span></div>
                   </div>
+                  {/* Feedback form for delivered requests with no feedback */}
+                  {req.status === 'delivered' && !req.feedback_given && (
+                    <FeedbackForm requestId={req.id} recipientId={JSON.parse(localStorage.getItem('user')).id} onSubmitted={fetchMyRequests} />
+                  )}
+                  {/* Show feedback if already given */}
+                  {req.status === 'delivered' && req.feedback_given && (
+                    <div style={{marginTop:8, background:'#e6ffe6', padding:12, borderRadius:8}}>
+                      <b>Your Feedback:</b><br/>
+                      Rating: {req.feedback_rating} <br/>
+                      {req.feedback_comment && (<span>Comment: {req.feedback_comment}</span>)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
