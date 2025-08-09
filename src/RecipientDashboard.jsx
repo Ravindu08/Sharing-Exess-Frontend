@@ -340,15 +340,7 @@ function RecipientDashboard() {
                     >
                       📝 Request Food
                     </button>
-                    {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
-  <button 
-    onClick={() => handleAcceptRequest(listing.request_id, JSON.parse(localStorage.getItem('user')).name, JSON.parse(localStorage.getItem('user')).id)}
-    className="accept-btn"
-    style={{ marginLeft: 8, fontFamily: "'Montserrat', sans-serif", background: '#28a745', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 14px', fontWeight: 700, fontSize: 16 }}
-  >
-    Accept
-  </button>
-) }
+                    {/* Removed accept button */}
                   </>
                 )}
                 <button 
