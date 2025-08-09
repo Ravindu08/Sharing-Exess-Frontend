@@ -5,6 +5,7 @@ import ForgotPasswordModal from './components/ForgotPasswordModal';
 import { useNavigate } from 'react-router-dom';
 
 function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -33,20 +34,52 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Login payload:', {
+      email: formData.email,
+      password: formData.password
+    });
     if (officerMode) {
-      if (formData.password === 'admin123') {
-        if (onLoginSuccess) {
-          onLoginSuccess({ role: 'officer', name: 'Officer User', email: 'officer@sharingexcess.com' });
+      // Authenticate officer against backend
+      try {
+        const resp = await fetch('http://localhost/Sharing%20Excess/backend/officer_login.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email.trim(),
+            password: formData.password
+          })
+        });
+        const raw = await resp.text();
+        console.log('Officer raw response:', raw, 'status:', resp.status);
+        let data;
+        try { data = JSON.parse(raw); } catch (e) {
+          console.error('Officer JSON parse error:', e);
+          setErrors({ submit: 'Unexpected server response. Please try again.' });
+          return;
         }
-        onClose();
-        setTimeout(() => {
-          navigate('/calendar', { replace: true });
-        }, 100);
-        return;
-      } else {
-        setErrors({ password: 'Incorrect password for officer.' });
-        return;
+        if (data.success) {
+          const officerData = data.officer || {};
+          const officerUser = {
+            ...officerData,
+            role: 'officer',
+            // Ensure a concise display name like "officer 1" if name is missing or generic
+            name: (officerData.name && officerData.name.trim() !== '')
+              ? officerData.name.trim()
+              : (`officer ${officerData.id || ''}`).trim()
+          };
+          localStorage.setItem('user', JSON.stringify(officerUser));
+          localStorage.setItem('role', 'officer');
+          if (onLoginSuccess) onLoginSuccess(officerUser);
+          onClose();
+          navigate('/officer', { replace: true });
+        } else {
+          setErrors({ submit: data.message || 'Invalid officer credentials' });
+        }
+      } catch (err) {
+        console.error('Officer login fetch error:', err);
+        setErrors({ submit: 'Network error. Please try again.' });
       }
+      return;
     }
     const newErrors = {};
 
@@ -70,11 +103,12 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
     else if (formData.email === 'officer@sharingexcess.com') autoRole = 'officer';
     else if (!formData.role && formData.email) autoRole = '';
     // This ensures officer@sharingexcess.com always gets 'officer' role sent
-    if (!autoRole) {
-      newErrors.role = 'Please select a role';
-    }
+    // Role selection is no longer required for login; do not block on role
+    // newErrors.role = 'Please select a role';
 
+    console.log('Validation errors:', newErrors);
     if (Object.keys(newErrors).length === 0) {
+      console.log('Proceeding to fetch login.php...');
       try {
         const response = await fetch('http://localhost/Sharing%20Excess/backend/login.php', {
           method: 'POST',
@@ -82,14 +116,22 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            role: autoRole || formData.role
+            email: formData.email.trim(),
+            password: formData.password
           })
         });
 
-        const data = await response.json();
-        
+        const raw = await response.text();
+        console.log('Raw login response:', raw, 'status:', response.status);
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch (err) {
+          console.error('JSON parse error:', err);
+          setErrors({ submit: 'Unexpected server response. Please try again.' });
+          return;
+        }
+
         console.log('Logged in user:', data.user);
         console.log('Logged in user role:', data.user && data.user.role);
         if (data.success) {
@@ -99,15 +141,16 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
           if (data.token) {
             localStorage.setItem('token', data.token);
           }
-          
           // Call the onLoginSuccess callback
           if (onLoginSuccess) {
             onLoginSuccess(data.user);
           }
-          
-          // Redirect based on role
-          if (data.user.role === 'admin' || data.user.role === 'officer') {
-            localStorage.setItem('role', data.user.role); // ensure role is set
+          // Close modal and navigate only on success
+          onClose();
+          localStorage.setItem('role', data.user.role);
+          if (data.user.role === 'officer') {
+            navigate('/officer', { replace: true });
+          } else if (data.user.role === 'admin') {
             navigate('/calendar', { replace: true });
           } else if (data.user.role === 'donor') {
             navigate('/donor-dashboard', { replace: true });
@@ -119,11 +162,13 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
             setLoginEmail(formData.email);
             setShowVerification(true);
           } else {
-            setErrors({ submit: data.message });
+            setErrors({ submit: data.message || 'Invalid credentials' });
           }
         }
       } catch (error) {
+        console.error('Login fetch error:', error);
         setErrors({ submit: 'Network error. Please try again.' });
+        return;
       }
     } else {
       setErrors(newErrors);
@@ -182,41 +227,6 @@ function LoginModal({ isOpen, onClose, onSignupClick, onLoginSuccess }) {
               />
               {errors.password && <span className="error-message">{errors.password}</span>}
               <div className="password-hint">Your password must be at least 6 characters long.</div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="role">I am a:</label>
-              <div className="role-options">
-                <label className="role-option">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="donor"
-                    checked={formData.role === 'donor'}
-                    onChange={handleChange}
-                    disabled={formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com'}
-                  />
-                  <span className="role-text">Donor</span>
-                </label>
-                <label className="role-option">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="recipient"
-                    checked={formData.role === 'recipient'}
-                    onChange={handleChange}
-                    disabled={formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com'}
-                  />
-                  <span className="role-text">Recipient</span>
-                </label>
-                {/* Hide role selection for admin/officer */}
-                {(formData.email === 'admin@sharingexcess.com' || formData.email === 'officer@sharingexcess.com') && (
-                  <div style={{ color: '#28a745', fontWeight: 600, marginTop: 8 }}>
-                    Logging in as <b>{formData.email === 'admin@sharingexcess.com' ? 'Admin' : 'Officer'}</b>
-                  </div>
-                )}
-              </div>
-              {errors.role && <span className="error-message">{errors.role}</span>}
             </div>
 
             {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}

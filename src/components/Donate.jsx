@@ -63,7 +63,10 @@ function Donate() {
       const data = await response.json();
       if (data.success) {
         setSuccessMessage('🎉 Thank you for your donation! We will contact you soon.');
-        setTimeout(() => setSuccessMessage(''), 5000); // Hide after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage('');
+          window.location.href = '/donor-dashboard';
+        }, 1500); // Show message for 1.5 seconds, then redirect
         setFormData({
           foodName: '',
           quantity: '',
