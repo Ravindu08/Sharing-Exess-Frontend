@@ -5,6 +5,14 @@ function DonorDashboard() {
   const [myDonations, setMyDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // Toast notification state
+  const [toast, setToast] = useState({ visible: false, message: '' });
+
+  const showToast = (message) => {
+    setToast({ visible: true, message });
+    // Auto-hide after 3 seconds
+    setTimeout(() => setToast({ visible: false, message: '' }), 3000);
+  };
 
   useEffect(() => {
     fetchFoodRequests();
@@ -68,10 +76,13 @@ function DonorDashboard() {
       const data = await response.json();
       
       if (data.success) {
+        // Attractive success toast (show before refetch triggers loading UI)
+        showToast(status === 'accepted' 
+          ? '🎉 Request accepted! Recipient will be notified.' 
+          : `✅ Request ${status} successfully!`);
         // Refresh both requests and donations lists
         fetchFoodRequests();
         fetchMyDonations();
-        alert(`Request ${status} successfully!`);
       } else {
         alert(data.message || 'Failed to respond to request');
       }
@@ -83,8 +94,15 @@ function DonorDashboard() {
   if (loading) {
     return (
       <div className="dashboard-container">
+        {toast.visible && (
+          <div className="se-toast se-toast-success" role="status" aria-live="polite">
+            <div className="se-toast-icon">🎉</div>
+            <div className="se-toast-message">{toast.message}</div>
+            <button className="se-toast-close" onClick={() => setToast({ visible: false, message: '' })} aria-label="Close">×</button>
+          </div>
+        )}
         <h2 style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '2.5rem',
@@ -111,8 +129,15 @@ function DonorDashboard() {
   if (error) {
     return (
       <div className="dashboard-container">
+        {toast.visible && (
+          <div className="se-toast se-toast-success" role="status" aria-live="polite">
+            <div className="se-toast-icon">🎉</div>
+            <div className="se-toast-message">{toast.message}</div>
+            <button className="se-toast-close" onClick={() => setToast({ visible: false, message: '' })} aria-label="Close">×</button>
+          </div>
+        )}
         <h2 style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '2.5rem',
@@ -142,8 +167,15 @@ function DonorDashboard() {
 
   return (
     <div className="dashboard-container">
+      {toast.visible && (
+        <div className="se-toast se-toast-success" role="status" aria-live="polite">
+          <div className="se-toast-icon">🎉</div>
+          <div className="se-toast-message">{toast.message}</div>
+          <button className="se-toast-close" onClick={() => setToast({ visible: false, message: '' })} aria-label="Close">×</button>
+        </div>
+      )}
       <h2 style={{ 
-        color: '#000', 
+        color: '#fff', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
         fontFamily: "'Montserrat', sans-serif",
         fontSize: '2.5rem',
@@ -155,7 +187,7 @@ function DonorDashboard() {
       </h2>
       <div className="dashboard-header">
         <p style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '1px 1px 6px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '1.1rem',
@@ -185,13 +217,12 @@ function DonorDashboard() {
           </p>
         </div>
       ) : (
-        <div className="dashboard-listings">
+        <div className="dashboard-listings requests-grid">
           {foodRequests.map((request) => (
             <div key={request.id} className="dashboard-card" style={{ 
               background: 'rgba(255, 255, 255, 0.9)', 
               borderRadius: '16px', 
               padding: '1.5rem', 
-              marginBottom: '1.5rem', 
               boxShadow: '0 4px 24px rgba(40, 167, 69, 0.10)',
               border: '1px solid rgba(40, 167, 69, 0.2)',
               fontFamily: "'Montserrat', sans-serif"
@@ -225,7 +256,7 @@ function DonorDashboard() {
         </div>
       )}
 
-      <h3 style={{marginTop: 32}}>My Donations (My Food Listings)</h3>
+      <h3 style={{marginTop: 32, color: '#fff'}}>My Donations (My Food Listings)</h3>
       {myDonations.length === 0 ? (
         <div className="no-requests">
           <p>You have not listed any food donations yet.</p>

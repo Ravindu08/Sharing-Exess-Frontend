@@ -5,6 +5,48 @@
   box-sizing: border-box;
 }
 
+/* Toast notification */
+.se-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border-left: 6px solid #28a745;
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  animation: seSlideIn 300ms ease forwards;
+  font-family: 'Montserrat', sans-serif;
+}
+.se-toast-success {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fff8 100%);
+}
+.se-toast-icon {
+  font-size: 1.2rem;
+}
+.se-toast-message {
+  color: #1b1b1b;
+  font-weight: 700;
+}
+.se-toast-close {
+  margin-left: 4px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: #28a745;
+  cursor: pointer;
+}
+
+@keyframes seSlideIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   margin: 0;
@@ -365,6 +407,29 @@ html, body {
   background: #fff5f5;
   border: 1px solid #fed7d7;
   border-radius: 8px;
+}
+
+/* Donor Dashboard grids */
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem; /* 20px */
+}
+
+@media (max-width: 1200px) {
+  .requests-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .requests-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .requests-grid { grid-template-columns: 1fr; }
+}
+
+/* Optional: make dashboard-card fill grid cells nicely */
+.requests-grid .dashboard-card {
+  height: 100%;
+  margin-bottom: 0; /* use grid gap instead */
 }
 
 /* === Dashboard Listings === */
@@ -2125,7 +2190,7 @@ html, body {
 }
 
 .impact-section {
-  background: #181c1f;
+  background: transparent;
   color: #fff;
   padding: 60px 0 80px 0;
   display: flex;
@@ -2138,15 +2203,19 @@ html, body {
   max-width: 700px;
   margin: 0 auto;
   text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .impact-counter {
   margin-bottom: 24px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 16px;
-  padding: 20px 24px;
-  display: inline-block;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  display: block;
+  box-shadow: none;
 }
 
 .impact-number {
@@ -2206,4 +2275,58 @@ html, body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Overrides to ensure Food Requests use 4-3-2-1 columns without being overridden */
+.dashboard-listings.requests-grid {
+  grid-template-columns: repeat(4, minmax(280px, 1fr));
+  max-width: none;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 8px;
+}
+@media (max-width: 1200px) {
+  .dashboard-listings.requests-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .dashboard-listings.requests-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .dashboard-listings.requests-grid { grid-template-columns: 1fr; }
+}
+
+/* Fancy primary action button: Request Custom Food */
+.request-food-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #28a745 0%, #34d058 100%);
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 16px;
+  font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.2px;
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.28);
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+}
+.request-food-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(40, 167, 69, 0.35);
+  filter: brightness(1.02);
+}
+.request-food-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px rgba(40, 167, 69, 0.25);
+  filter: brightness(0.98);
+}
+.request-food-btn:focus-visible {
+  outline: 3px solid rgba(52, 208, 88, 0.6);
+  outline-offset: 2px;
+}
+.request-food-btn span:first-child {
+  font-size: 1.1rem;
+  line-height: 1;
 }

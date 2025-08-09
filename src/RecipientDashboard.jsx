@@ -194,7 +194,7 @@ function RecipientDashboard() {
     return (
       <div className="dashboard-container">
         <h2 style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '2.5rem',
@@ -222,7 +222,7 @@ function RecipientDashboard() {
     return (
       <div className="dashboard-container">
         <h2 style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '2.5rem',
@@ -253,7 +253,7 @@ function RecipientDashboard() {
   return (
     <div className="dashboard-container">
       <h2 style={{ 
-        color: '#000', 
+        color: '#fff', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
         fontFamily: "'Montserrat', sans-serif",
         fontSize: '2.5rem',
@@ -265,7 +265,7 @@ function RecipientDashboard() {
       </h2>
       <div className="dashboard-header">
         <p style={{ 
-          color: '#000', 
+          color: '#fff', 
           textShadow: '1px 1px 6px rgba(255,255,255,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '1.1rem',
@@ -364,7 +364,7 @@ function RecipientDashboard() {
       )}
       {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
         <>
-          <h3 style={{marginTop: 32}}>My Food Requests</h3>
+          <h3 style={{marginTop: 32, color: '#fff'}}>My Food Requests</h3>
           {myRequests.length === 0 ? (
             <div className="no-requests">
               <p>You have not made any food requests yet.</p>
@@ -397,7 +397,7 @@ function RecipientDashboard() {
       )}
       {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
         <>
-          <h3 style={{marginTop: 32}}>My Donations (Accepted Requests)</h3>
+          <h3 style={{marginTop: 32, color: '#fff'}}>My Donations (Accepted Requests)</h3>
           {myDonations.length === 0 ? (
             <div className="no-requests">
               <p>You have not accepted any food requests yet.</p>
