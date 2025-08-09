@@ -11,14 +11,22 @@ function Navbar() {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const getEffectiveRole = () => {
-    const fromState = user && user.role ? String(user.role).toLowerCase() : '';
+    const normalize = (val) => (val ? String(val).toLowerCase().trim() : '');
+    const fromState = normalize(user && user.role);
     if (fromState) return fromState;
     try {
       const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (storedUser && storedUser.role) return String(storedUser.role).toLowerCase();
+      if (storedUser) {
+        // Email-based fallback for admin/officer accounts
+        const email = normalize(storedUser.email);
+        if (email === 'admin@sharingexcess.com') return 'admin';
+        if (email === 'officer@sharingexcess.com') return 'officer';
+        const role = normalize(storedUser.role);
+        if (role) return role;
+      }
     } catch {}
-    const fromKey = localStorage.getItem('role');
-    return fromKey ? String(fromKey).toLowerCase() : '';
+    const fromKey = normalize(localStorage.getItem('role'));
+    return fromKey;
   };
   const effectiveRole = getEffectiveRole();
 
@@ -119,11 +127,7 @@ function Navbar() {
                   <span className="nav-text">Donate</span>
                 </a>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/request">
-                  <span className="nav-text">Request</span>
-                </Link>
-              </li>
+              
               <li className="nav-item">
                 <Link className="nav-link" to="/ngos">
                   <span className="nav-text">NGOs</span>
@@ -151,24 +155,16 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    {user && user.email === 'admin@sharingexcess.com' ? (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Admin Account
-  </span>
-) : user && user.role === 'admin' ? (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Admin
-  </span>
-) : (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Hello, {(user && user.name) || username || 'User'}
-    {user && user.role && (
-      <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
-        ({user.role})
-      </span>
-    )}
-  </span>
-)}
+                    {!(effectiveRole === 'officer' || effectiveRole === 'admin') && (
+                      <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+                        Hello, {(user && user.name) || username || 'User'}
+                        {user && user.role && (
+                          <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
+                            ({user.role})
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </div>
                   {(effectiveRole === 'officer' || effectiveRole === 'admin') && (
                     <Link className="nav-link officer-btn" to="/officer" style={{
@@ -177,6 +173,7 @@ function Navbar() {
                       <span className="nav-text">Officer Dashboard</span>
                     </Link>
                   )}
+                  {/* Removed separate Admin Dashboard button per request */}
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>
                   </button>

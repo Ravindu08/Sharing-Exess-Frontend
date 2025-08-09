@@ -32,15 +32,15 @@ function DonorDashboard() {
   const fetchMyDonations = async () => {
     setLoading(true);
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      console.log("User from localStorage:", user); // Debug user object
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      console.log("User from localStorage:", storedUser); // Debug user object
       const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          donor_id: user && user.id
+          donor_id: storedUser && storedUser.id
         }),
       });
       const data = await response.json();
@@ -55,7 +55,6 @@ function DonorDashboard() {
     }
   };
       
-
   const handleRespondToRequest = async (requestId, status) => {
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/respond_to_request.php', {
@@ -89,7 +88,7 @@ function DonorDashboard() {
   // Officer/Admin-only actions
   const handleDeleteRequest = async (requestId) => {
     const role = (user && user.role ? String(user.role).toLowerCase() : '');
-    if (role !== 'officer') return;
+    if (role !== 'officer' && role !== 'admin') return;
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/officer_delete_request.php', {
         method: 'POST',
@@ -131,13 +130,7 @@ function DonorDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -165,13 +158,7 @@ function DonorDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -202,13 +189,7 @@ function DonorDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
+    <div className="dashboard-container">
       <h2 style={{ 
         color: '#000', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -270,7 +251,6 @@ function DonorDashboard() {
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Location: {request.location}</div>
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Status: <span className={`status-${request.status}`}>{request.status}</span></div>
               <div className="request-actions">
-                {/* Officer privileges */}
                 {(user && user.role && user.role.toLowerCase() === 'officer') && (
                   <div style={{ marginTop: 10 }}>
                     <button
@@ -377,7 +357,6 @@ function DonorDashboard() {
         <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
         <div className="detail-item"><span className="detail-label">🗓️ Listed:</span> <span className="detail-value">{new Date(don.created_at).toLocaleDateString()}</span></div>
         <div className="detail-item"><span className="detail-label">Total Requests:</span> <span className="detail-value">{don.total_requests}</span></div>
-        {/* Accepted Requests Section */}
         {don.requests && don.requests.length > 0 && (
           <div className="accepted-requests" style={{ marginTop: 12, background: '#eaffea', borderRadius: 8, padding: '10px 14px' }}>
             <strong style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif" }}>Accepted Requests:</strong>

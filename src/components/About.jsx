@@ -4,15 +4,7 @@ function About() {
   return (
     <section
       className="about"
-      style={{
-        position: 'relative',
-        backgroundImage: 'url(/background.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        zIndex: 1
-      }}
+      style={{ position: 'relative', minHeight: '100vh', zIndex: 1, background: 'transparent' }}
     >
       {/* Dark overlay removed for brighter background */}
       <div className="container" style={{ position: 'relative', zIndex: 3 }}>

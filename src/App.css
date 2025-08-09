@@ -20,6 +20,8 @@ body {
 html, body {
   max-width: 100%;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* === Navbar === */
@@ -30,6 +32,10 @@ html, body {
   backdrop-filter: blur(10px);
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  width: 100%;
 }
 
 .custom-navbar:hover {
@@ -340,7 +346,7 @@ html, body {
 .dashboard-container {
   min-height: 100vh;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: transparent;
 }
 
 .dashboard-container h2 {
@@ -1354,7 +1360,7 @@ html, body {
 /* === About Section === */
 .about {
   padding: 60px 20px;
-  background-color: #28a745;
+  background: transparent;
   text-align: center;
 }
 
@@ -1374,20 +1380,90 @@ html, body {
 
 /* === Footer === */
 .footer {
-  background-color: #343a40;
+  background: rgba(0, 0, 0, 0.75);
   color: #ffffff;
-  padding: 20px 0;
-  text-align: center;
-  font-size: 0.9rem;
+  padding: 40px 0 20px 0;
+  font-size: 0.95rem;
+  position: relative;
+  z-index: 2;
 }
 
-.footer a {
-  color: #ffa500;
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.footer-col h4 {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.footer-tagline {
+  margin: 0;
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #e5e7eb;
+}
+.contact-list li { margin: 6px 0; }
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.social-links a {
+  color: #a7f3d0;
   text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(167, 243, 208, 0.3);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.social-links a:hover {
+  background: rgba(167, 243, 208, 0.15);
+  border-color: rgba(167, 243, 208, 0.5);
 }
 
-.footer a:hover {
-  text-decoration: underline;
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-links li { margin: 6px 0; }
+.footer a { color: #a7f3d0; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 12px;
+  color: #cbd5e1;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-legal a { color: #93c5fd; }
+.footer-sep { margin: 0 8px; color: #64748b; }
+
+@media (max-width: 576px) {
+  .footer { padding: 28px 0 16px 0; }
+  .footer-columns { gap: 16px; }
 }
 
 /* Home Options Styles */
@@ -1918,17 +1994,28 @@ html, body {
   }
 }
 
-.main-background {
+.global-bg {
+  position: fixed;
+  inset: 0;
   background-image: url('/background.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  transform: translateZ(0);
+  will-change: transform;
+  z-index: 0;
+}
+
+.main-background {
+  /* Background handled by .global-bg to avoid clipping and movement */
   min-height: 100vh;
   background-color: #f5faf700;
   width: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .main-background.no-bg {
@@ -1982,7 +2069,7 @@ html, body {
 .impact-section {
   background: #181c1f;
   color: #fff;
-  padding: 60px 0 60px 0;
+  padding: 60px 0 80px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1996,17 +2083,20 @@ html, body {
 
 .impact-counter {
   margin-bottom: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: inline-block;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
 }
 
 .impact-number {
   font-size: 3rem;
   font-weight: 900;
   letter-spacing: 2px;
-  background: #222;
-  border-radius: 12px;
-  padding: 16px 32px;
-  display: inline-block;
-  box-shadow: 0 4px 24px rgba(40,167,69,0.10);
+  display: block;
+  padding: 0;
+  background: transparent;
 }
 
 .impact-label {

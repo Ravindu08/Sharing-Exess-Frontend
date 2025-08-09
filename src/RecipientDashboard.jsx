@@ -193,13 +193,7 @@ function RecipientDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -227,13 +221,7 @@ function RecipientDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -264,13 +252,7 @@ function RecipientDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
+    <div className="dashboard-container">
       <h2 style={{ 
         color: '#000', 
         textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -428,36 +410,7 @@ function RecipientDashboard() {
           )}
         </>
       )}
-      {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
-        <>
-          <h3 style={{marginTop: 32}}>My Donations (Accepted Requests)</h3>
-          {myDonations.length === 0 ? (
-            <div className="no-requests">
-              <p>You have not accepted any food requests yet.</p>
-            </div>
-          ) : (
-            <div className="dashboard-listings">
-              {myDonations.map((don) => (
-                <div key={don.id} className="dashboard-card">
-                  <div className="food-header">
-                    <strong className="food-name">{don.food_name}</strong>
-                    <span className="quantity-badge">{don.quantity}</span>
-                    <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
-                      Accepted by {don.accepted_by}
-                    </span>
-                  </div>
-                  <div className="food-details">
-                    <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{don.needed_by}</span></div>
-                    <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
-                    <div className="detail-item"><span className="detail-label">🗓️ Accepted:</span> <span className="detail-value">{don.updated_at ? new Date(don.updated_at).toLocaleDateString() : ''}</span></div>
-                    <div className="detail-item"><span className="detail-label">Donor:</span> <span className="detail-value">{don.donor_name || '-'}</span></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+      {/* Removed 'My Donations (Accepted Requests)' section per request */}
       {showRequestModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="modal-content" style={{ background: '#fff', padding: 32, borderRadius: 16, minWidth: 350, maxWidth: 420, boxShadow: '0 4px 24px rgba(40,167,69,0.15)', fontFamily: "'Montserrat', sans-serif", position: 'relative' }}>

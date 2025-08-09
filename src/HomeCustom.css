@@ -11,8 +11,8 @@
 .home-options-center-area {
   width: 100%;
   max-width: 700px;
-  margin: 0 auto 40px auto;
-  padding: 40px 24px 32px 24px;
+  margin: 0 auto 12px auto;
+  padding: 40px 24px 12px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,7 +30,7 @@
   max-width: 900px;
   margin: 0 auto;
   background: transparent;
-  padding: 24px 0 16px 0;
+  padding: 24px 0 8px 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -48,17 +48,17 @@
     align-items: center;
   }
   .home-options-center-area {
-    padding: 24px 5vw 18px 5vw;
+    padding: 24px 5vw 10px 5vw;
   }
   .home-options-black-box {
-    padding: 16px 0 12px 0;
+    padding: 12px 0 8px 0;
   }
 }
 
 .home-slideshow-smaller {
   max-width: 480px;
   width: 90vw;
-  margin: 12px auto 0 auto;
+  margin: 0 auto 16px auto;
   border-radius: 12px;
   overflow: hidden;
 }

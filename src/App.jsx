@@ -20,10 +20,12 @@ import Request from './components/Request.jsx';
 function AppContent() {
   const location = useLocation();
   const isOfficerPage = location.pathname.startsWith('/officer');
+  const isCalendarPage = location.pathname.startsWith('/calendar');
   return (
       <div className="app-root">
+        <div className="global-bg" aria-hidden="true" />
         <Navbar />
-        <div className={isOfficerPage ? 'main-background no-bg' : 'main-background'}>
+        <div className={(isOfficerPage || isCalendarPage) ? 'main-background no-bg' : 'main-background'}>
           <div className="app-content">
             <Routes>
               <Route path="/" element={<Home />} />
