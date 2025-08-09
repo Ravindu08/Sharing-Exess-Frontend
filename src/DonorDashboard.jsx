@@ -5,11 +5,8 @@ function DonorDashboard() {
   const [myDonations, setMyDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    setUser(storedUser);
     fetchFoodRequests();
     fetchMyDonations();
   }, []);
@@ -32,19 +29,17 @@ function DonorDashboard() {
   const fetchMyDonations = async () => {
     setLoading(true);
     try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      console.log("User from localStorage:", storedUser); // Debug user object
+      const user = JSON.parse(localStorage.getItem('user'));
       const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          donor_id: storedUser && storedUser.id
+          donor_id: user.id
         }),
       });
       const data = await response.json();
-      console.log("Full backend response:", data);
       if (data.success) {
         setMyDonations(data.donations);
       }
@@ -54,7 +49,7 @@ function DonorDashboard() {
       setLoading(false);
     }
   };
-      
+
   const handleRespondToRequest = async (requestId, status) => {
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/respond_to_request.php', {
@@ -79,49 +74,6 @@ function DonorDashboard() {
         alert(`Request ${status} successfully!`);
       } else {
         alert(data.message || 'Failed to respond to request');
-      }
-    } catch (error) {
-      alert('Network error. Please try again.');
-    }
-  };
-
-  // Officer/Admin-only actions
-  const handleDeleteRequest = async (requestId) => {
-    const role = (user && user.role ? String(user.role).toLowerCase() : '');
-    if (role !== 'officer' && role !== 'admin') return;
-    try {
-      const response = await fetch('http://localhost/Sharing%20Excess/backend/officer_delete_request.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ request_id: requestId })
-      });
-      const data = await response.json();
-      if (data.success) {
-        fetchFoodRequests();
-        alert('Request deleted successfully!');
-      } else {
-        alert(data.message || 'Failed to delete request');
-      }
-    } catch (error) {
-      alert('Network error. Please try again.');
-    }
-  };
-
-  const handleUpdateRequest = async (requestId, updatedFields) => {
-    const role = (user && user.role ? String(user.role).toLowerCase() : '');
-    if (role !== 'officer' && role !== 'admin') return;
-    try {
-      const response = await fetch('http://localhost/Sharing%20Excess/backend/officer_update_request.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ request_id: requestId, updates: updatedFields })
-      });
-      const data = await response.json();
-      if (data.success) {
-        fetchFoodRequests();
-        alert('Request updated successfully!');
-      } else {
-        alert(data.message || 'Failed to update request');
       }
     } catch (error) {
       alert('Network error. Please try again.');
@@ -235,11 +187,11 @@ function DonorDashboard() {
       ) : (
         <div className="dashboard-listings">
           {foodRequests.map((request) => (
-            <div key={request.id} className="dashboard-card" style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              marginBottom: '1.5rem',
+            <div key={request.id} className="dashboard-card" style={{ 
+              background: 'rgba(255, 255, 255, 0.9)', 
+              borderRadius: '16px', 
+              padding: '1.5rem', 
+              marginBottom: '1.5rem', 
               boxShadow: '0 4px 24px rgba(40, 167, 69, 0.10)',
               border: '1px solid rgba(40, 167, 69, 0.2)',
               fontFamily: "'Montserrat', sans-serif"
@@ -251,38 +203,6 @@ function DonorDashboard() {
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Location: {request.location}</div>
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Status: <span className={`status-${request.status}`}>{request.status}</span></div>
               <div className="request-actions">
-                {(user && user.role && user.role.toLowerCase() === 'officer') && (
-                  <div style={{ marginTop: 10 }}>
-                    <button
-                      onClick={() => { const v = prompt('Set status (pending, accepted, declined):', request.status || 'pending'); if (!v) return; handleUpdateRequest(request.id, { status: v }); }}
-                      className="update-btn"
-                      style={{ marginRight: 8, background: '#007bff', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
-                    >
-                      Set Status
-                    </button>
-                    <button
-                      onClick={() => { const v = prompt('Set quantity:', request.quantity); if (v===null) return; const n = parseInt(v,10); if (isNaN(n)) return alert('Invalid number'); handleUpdateRequest(request.id, { quantity: n }); }}
-                      className="update-btn"
-                      style={{ marginRight: 8, background: '#17a2b8', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
-                    >
-                      Set Qty
-                    </button>
-                    <button
-                      onClick={() => { const v = prompt('Set notes:', request.notes || ''); if (v===null) return; handleUpdateRequest(request.id, { notes: v }); }}
-                      className="update-btn"
-                      style={{ marginRight: 8, background: '#6f42c1', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
-                    >
-                      Set Notes
-                    </button>
-                    <button
-                      onClick={() => handleDeleteRequest(request.id)}
-                      className="delete-btn"
-                      style={{ background: '#dc3545', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
                 {request.status === 'pending' && (
                   <>
                     <button 
@@ -357,6 +277,7 @@ function DonorDashboard() {
         <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
         <div className="detail-item"><span className="detail-label">🗓️ Listed:</span> <span className="detail-value">{new Date(don.created_at).toLocaleDateString()}</span></div>
         <div className="detail-item"><span className="detail-label">Total Requests:</span> <span className="detail-value">{don.total_requests}</span></div>
+        {/* Accepted Requests Section */}
         {don.requests && don.requests.length > 0 && (
           <div className="accepted-requests" style={{ marginTop: 12, background: '#eaffea', borderRadius: 8, padding: '10px 14px' }}>
             <strong style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif" }}>Accepted Requests:</strong>
