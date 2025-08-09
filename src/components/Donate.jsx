@@ -63,10 +63,7 @@ function Donate() {
       const data = await response.json();
       if (data.success) {
         setSuccessMessage('🎉 Thank you for your donation! We will contact you soon.');
-        setTimeout(() => {
-          setSuccessMessage('');
-          window.location.href = '/donor-dashboard';
-        }, 1500); // Show message for 1.5 seconds, then redirect
+        setTimeout(() => setSuccessMessage(''), 5000); // Hide after 5 seconds
         setFormData({
           foodName: '',
           quantity: '',
@@ -254,13 +251,11 @@ function Donate() {
                   Only donors can submit donations
                 </h2>
                 <p style={{ color: '#000', fontFamily: "'Montserrat', sans-serif", marginBottom: '2rem' }}>
-                  You are logged in as <strong>{user.role}</strong>. Please use the Request page instead.
+                  You are logged in as <strong>{user.role}</strong>. Please use the Recipient Dashboard instead.
                 </p>
-                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-                  <a href="/request" className="submit-btn" style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)', color: '#fff', textDecoration: 'none', fontFamily: "'Montserrat', sans-serif" }}>
-                    Go to Request
-                  </a>
-                </div>
+                <a href="/recipient-dashboard" className="submit-btn" style={{ background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)', color: '#fff', textDecoration: 'none', fontFamily: "'Montserrat', sans-serif" }}>
+                  Go to Recipient Dashboard
+                </a>
               </>
             ) : (
               <>

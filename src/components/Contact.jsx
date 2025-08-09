@@ -31,14 +31,15 @@ function Contact() {
       padding: 40
     }}>
       <div style={{
-        background: 'transparent',
+        background: 'white',
         borderRadius: 16,
-        boxShadow: 'none',
-        maxWidth: 480,
+        boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
+        maxWidth: 550,
         width: '100%',
         padding: '36px 28px',
         margin: '0 auto',
-        zIndex: 2
+        zIndex: 2,
+        border: '1px solid #e0e0e0'
       }}>
         <h2 style={{ textAlign: 'center', color: '#28a745', fontWeight: 900, fontSize: '2.2rem', marginBottom: 18 }}>Contact Us</h2>
         <p style={{ textAlign: 'center', color: '#333', marginBottom: 28 }}>
