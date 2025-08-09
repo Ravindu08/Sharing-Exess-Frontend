@@ -1,49 +1,125 @@
 import React, { useState } from 'react';
 
-function FeedbackForm({ requestId, recipientId, onSubmitted }) {
+function FeedbackForm({ requestId, recipientId }) {
   const [comment, setComment] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage('');
+    if (!comment.trim()) return;
+    
+    setIsLoading(true);
+    setError('');
+    
     try {
-      const res = await fetch('http://localhost/Sharing%20Excess/backend/submit_feedback.php', {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/submit_feedback.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           request_id: requestId,
           recipient_id: recipientId,
-          comment,
+          comment: comment.trim()
         })
       });
-      const data = await res.json();
+      
+      const data = await response.json();
       if (data.success) {
-        setMessage('Feedback submitted!');
-        if (onSubmitted) onSubmitted();
+        setIsSubmitted(true);
+        setComment(''); // Clear the comment after successful submission
+        setTimeout(() => setIsSubmitted(false), 3000); // Hide success message after 3 seconds
       } else {
-        setMessage(data.message || 'Failed to submit feedback');
+        setError(data.message || 'Failed to submit feedback');
       }
     } catch (err) {
-      setMessage('Network error');
+      setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: 12, background: '#f1f1f1', padding: 16, borderRadius: 8 }}>
-      <div style={{ marginTop: 8 }}>
-        <label>Comment: </label>
-        <textarea value={comment} onChange={e => setComment(e.target.value)} disabled={loading} rows={3} style={{ width: '100%' }} />
-      </div>
-      <button type="submit" disabled={loading} style={{ marginTop: 10 }}>
-        {loading ? 'Submitting...' : 'Submit Feedback'}
-      </button>
-      {message && <div style={{ color: 'green', marginTop: 8 }}>{message}</div>}
-    </form>
+    <div style={{ marginTop: '16px' }}>
+      {isSubmitted && (
+        <div style={{
+          padding: '12px',
+          marginBottom: '16px',
+          backgroundColor: '#d4edda',
+          color: '#155724',
+          borderRadius: '4px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '14px'
+        }}>
+          <span>✓</span>
+          <span>Thank you for your feedback!</span>
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: '12px' }}>
+          <label style={{
+            display: 'block',
+            marginBottom: '8px',
+            fontWeight: '500',
+            color: '#333',
+            fontSize: '14px'
+          }}>
+            Your Feedback:
+          </label>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            disabled={isLoading}
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ced4da',
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: '14px',
+              resize: 'vertical',
+              minHeight: '80px',
+              marginBottom: '8px'
+            }}
+            placeholder="Share your experience with this food donation..."
+            required
+          />
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            type="submit"
+            disabled={!comment.trim() || isLoading}
+            style={{
+              backgroundColor: '#28a745',
+              color: 'white',
+              border: 'none',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: '500',
+              opacity: (!comment.trim() || isLoading) ? 0.7 : 1,
+              pointerEvents: (!comment.trim() || isLoading) ? 'none' : 'auto',
+              transition: 'opacity 0.2s',
+              fontSize: '14px'
+            }}
+          >
+            {isLoading ? 'Submitting...' : 'Submit Feedback'}
+          </button>
+          
+          {error && (
+            <span style={{ color: '#dc3545', fontSize: '13px' }}>
+              {error}
+            </span>
+          )}
+        </div>
+      </form>
+    </div>
   );
 }
 
