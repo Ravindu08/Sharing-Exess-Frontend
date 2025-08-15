@@ -14,6 +14,7 @@ import Donate from './components/Donate.jsx';
 import FoodDonationsDashboard from './components/FoodDonationsDashboard.jsx';
 import CalendarPage from './components/CalendarPage.jsx';
 import Contact from './components/Contact.jsx';
+import SupportUs from './components/SupportUs.jsx';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/food-donations" element={<FoodDonationsDashboard />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/support-us" element={<SupportUs />} />
             </Routes>
           </div>
         </div>

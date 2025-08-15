@@ -167,6 +167,15 @@ function Navbar() {
                       </span>
                     </Link>
                   </li>
+                  <li>
+                    <Link className="dropdown-item dropdown-item-enhanced" to="/support-us">
+                      <span className="dropdown-item-icon">💚</span>
+                      <span className="dropdown-item-text">
+                        <span className="dropdown-item-title">Support Us</span>
+                        <span className="dropdown-item-subtitle">Donate, volunteer, partner</span>
+                      </span>
+                    </Link>
+                  </li>
                 </ul>
               </li>
             </ul>

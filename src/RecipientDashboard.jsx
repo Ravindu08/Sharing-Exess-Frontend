@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FeedbackForm from './components/FeedbackForm.jsx';
 
 function RecipientDashboard() {
   // ...existing state hooks...
@@ -410,6 +411,14 @@ function RecipientDashboard() {
                     <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
                     <div className="detail-item"><span className="detail-label">🗓️ Accepted:</span> <span className="detail-value">{don.updated_at ? new Date(don.updated_at).toLocaleDateString() : ''}</span></div>
                     <div className="detail-item"><span className="detail-label">Donor:</span> <span className="detail-value">{don.donor_name || '-'}</span></div>
+                  </div>
+                  {/* Feedback form for this donation */}
+                  <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: 12, padding: '12px', marginTop: 12 }}>
+                    <h4 style={{ margin: 0, marginBottom: 8, color: '#000', fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 18 }}>Leave Feedback</h4>
+                    <FeedbackForm
+                      requestId={don.id}
+                      recipientId={JSON.parse(localStorage.getItem('user'))?.id}
+                    />
                   </div>
                 </div>
               ))}
