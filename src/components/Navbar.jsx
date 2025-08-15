@@ -137,6 +137,11 @@ function Navbar() {
                   <span className="nav-text">Calendar</span>
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/events">
+                  <span className="nav-text">Events</span>
+                </Link>
+              </li>
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
