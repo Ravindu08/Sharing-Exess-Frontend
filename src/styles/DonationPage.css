@@ -1,0 +1,181 @@
+/* Donation dedicated page styles */
+.donation-page {
+  padding: 3rem 1rem;
+}
+
+.donation-page-container {
+  max-width: 1450px;
+  margin: 0 auto;
+  width: 98%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  padding: 2rem 2.5rem;
+}
+
+.donation-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.donation-header h1 {
+  color: #28a745;
+  font-weight: 800;
+}
+
+.donation-header p {
+  color: #6c757d;
+}
+
+/* Reuse form section styles from DonationForm.css without modal scoping */
+.donation-form-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.donation-form-section {
+  margin-bottom: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+}
+
+.donation-form-section h5 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f1f3f5;
+}
+
+.form-control {
+  padding: 0.875rem 1.25rem;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
+  height: auto;
+  background-color: #f8f9fa;
+}
+
+.form-control:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+  background-color: #fff;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.payment-method {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  min-height: 110px;
+  text-align: center;
+}
+
+.payment-method img { max-height: 24px; width: auto; }
+.payment-method span { font-size: 0.85rem; color: #6c757d; margin-top: 0.5rem; }
+.payment-method:hover { border-color: #28a745; box-shadow: 0 2px 8px rgba(40,167,69,0.1); }
+.payment-method.active { border-color: #28a745; background-color: rgba(40,167,69,0.05); }
+
+.donation-amounts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.donation-amount-btn {
+  padding: 1rem 0.5rem;
+  font-size: 1.05rem;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  background: #fff;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  color: #495057;
+}
+
+.donation-amount-btn:hover { border-color: #28a745; color: #28a745; }
+.donation-amount-btn.active { background-color: #28a745; color: #fff; border-color: #28a745; }
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.security-badge svg { margin-right: 6px; color: #28a745; }
+
+.donate-now-btn {
+  background-color: #28a745;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.donate-now-btn:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(40,167,69,0.2); }
+.donate-now-btn:active { transform: translateY(0); box-shadow: none; }
+
+/* Success panel */
+.success-panel {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #f8fff9 0%, #e3f5e8 100%);
+  border: 1px solid rgba(40,167,69,0.15);
+  border-radius: 16px;
+}
+.success-panel .success-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #28a745;
+  color: #fff;
+  font-size: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .donation-form-grid { gap: 2rem; }
+}
+
+@media (max-width: 992px) {
+  .donation-page { padding: 2rem 0.75rem; }
+  .donation-page-container { width: 100%; border-radius: 0; }
+  .donation-form-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  .payment-methods { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+}
+
+@media (max-width: 576px) {
+  .donation-page-container { padding: 1rem; }
+  .donation-amounts { grid-template-columns: 1fr; }
+}
