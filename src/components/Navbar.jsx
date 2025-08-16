@@ -10,6 +10,25 @@ function Navbar() {
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
+  const getEffectiveRole = () => {
+    const normalize = (val) => (val ? String(val).toLowerCase().trim() : '');
+    const fromState = normalize(user && user.role);
+    if (fromState) return fromState;
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser) {
+        // Email-based fallback for admin/officer accounts
+        const email = normalize(storedUser.email);
+        if (email === 'admin@sharingexcess.com') return 'admin';
+        if (email === 'officer@sharingexcess.com') return 'officer';
+        const role = normalize(storedUser.role);
+        if (role) return role;
+      }
+    } catch {}
+    const fromKey = normalize(localStorage.getItem('role'));
+    return fromKey;
+  };
+  const effectiveRole = getEffectiveRole();
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -63,10 +82,9 @@ function Navbar() {
       setUsername(userData.name);
       localStorage.setItem('username', userData.name);
     }
-    // Redirect recipient to dashboard
-    // Redirect admin email to calendar
-    if (userData && userData.email === 'admin@sharingexcess.com') {
-      navigate('/calendar');
+    // Redirects after login
+    if (userData && (userData.role === 'officer' || userData.role === 'admin')) {
+      navigate('/officer');
     } else if (userData && userData.role === 'recipient') {
       navigate('/recipient-dashboard');
     } else if (userData && userData.role === 'donor') {
@@ -84,7 +102,23 @@ function Navbar() {
       <nav className="navbar navbar-expand-lg navbar-light custom-navbar">
         <div className="container-fluid px-4">
           <a className="navbar-brand" href="/">
-            <span className="brand-text">Sharing Excess</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img 
+                src="/logo.png" 
+                alt="Sharing Excess Logo" 
+                style={{ 
+                  width: 50, 
+                  height: 50, 
+                  objectFit: 'contain'
+                }}
+              />
+              <span className="brand-text" style={{ 
+                fontSize: 20, 
+                fontWeight: 700, 
+                color: '#28a745',
+                fontFamily: "'Montserrat', sans-serif"
+              }}>Sharing Excess</span>
+            </div>
           </a>
           <button 
             className="navbar-toggler" 
@@ -101,32 +135,34 @@ function Navbar() {
             <ul className="navbar-nav">
               <li className="nav-item">
                 <a className="nav-link" href="/">
-                  <span className="nav-text">Home</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>Home</span>
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/donate">
-                  <span className="nav-text">Donate</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>Donate</span>
                 </a>
               </li>
+              
               <li className="nav-item">
                 <Link className="nav-link" to="/ngos">
-                  <span className="nav-text">NGOs</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>NGOs</span>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/calendar">
-                  <span className="nav-text">Calendar</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>Calendar</span>
                 </Link>
               </li>
+              {/* Officer button only in user section below name */}
               <li className="nav-item">
                 <a className="nav-link" href="/about">
-                  <span className="nav-text">About Us</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>About Us</span>
                 </a>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/contact">
-                  <span className="nav-text">Contact Us</span>
+                  <span className="nav-text" style={{ fontSize: '0.9rem' }}>Contact Us</span>
                 </Link>
               </li>
             </ul>
@@ -135,25 +171,25 @@ function Navbar() {
                 // User is logged in - show user info and logout button
                 <div className="user-section">
                   <div className="user-info">
-                    {user && user.email === 'admin@sharingexcess.com' ? (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Admin Account
-  </span>
-) : user && user.role === 'admin' ? (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Admin
-  </span>
-) : (
-  <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
-    Hello, {(user && user.name) || username || 'User'}
-    {user && user.role && (
-      <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
-        ({user.role})
-      </span>
-    )}
-  </span>
-)}
+                    {!(effectiveRole === 'officer' || effectiveRole === 'admin') && (
+                      <span className="user-name" style={{ fontSize: '1.3rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>
+                        Hello, {(user && user.name) || username || 'User'}
+                        {user && user.role && (
+                          <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 400, color: '#eaffea', marginTop: 2 }}>
+                            ({user.role})
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </div>
+                  {(effectiveRole === 'officer' || effectiveRole === 'admin') && (
+                    <Link className="nav-link officer-btn" to="/officer" style={{
+                      background: '#28a745', color: '#fff', borderRadius: 6, padding: '6px 12px', marginLeft: 8, marginTop: 6, display: 'inline-block'
+                    }}>
+                      <span className="nav-text">Officer Dashboard</span>
+                    </Link>
+                  )}
+                  {/* Removed separate Admin Dashboard button per request */}
                   <button className="nav-link logout-btn" onClick={handleLogout}>
                     <span className="logout-text">Logout</span>
                   </button>
@@ -189,4 +225,4 @@ function Navbar() {
   );
 }
 
-export default Navbar; 
+export default Navbar;

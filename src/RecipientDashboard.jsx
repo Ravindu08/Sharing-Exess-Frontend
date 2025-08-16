@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FeedbackForm from './components/FeedbackForm';
 
 function RecipientDashboard() {
   // ...existing state hooks...
@@ -192,13 +193,7 @@ function RecipientDashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -226,13 +221,7 @@ function RecipientDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -263,16 +252,10 @@ function RecipientDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
-      <h2 style={{ 
-        color: '#000', 
-        textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
+    <div className="dashboard-container">
+      <h2 style={{
+        color: '#fff',
+        textShadow: '2px 2px 8px rgba(0,0,0,0.8)',
         fontFamily: "'Montserrat', sans-serif",
         fontSize: '2.5rem',
         fontWeight: '900',
@@ -281,10 +264,10 @@ function RecipientDashboard() {
       }}>
         Available Food Listings
       </h2>
-      <div className="dashboard-header">
-        <p style={{ 
-          color: '#000', 
-          textShadow: '1px 1px 6px rgba(255,255,255,0.8)', 
+      <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+        <p style={{
+          color: '#fff',
+          textShadow: '1px 1px 6px rgba(0,0,0,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '1.1rem',
           margin: 0
@@ -357,15 +340,7 @@ function RecipientDashboard() {
                     >
                       📝 Request Food
                     </button>
-                    {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
-  <button 
-    onClick={() => handleAcceptRequest(listing.request_id, JSON.parse(localStorage.getItem('user')).name, JSON.parse(localStorage.getItem('user')).id)}
-    className="accept-btn"
-    style={{ marginLeft: 8, fontFamily: "'Montserrat', sans-serif", background: '#28a745', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 14px', fontWeight: 700, fontSize: 16 }}
-  >
-    Accept
-  </button>
-) }
+                    {/* Removed accept button */}
                   </>
                 )}
                 <button 
@@ -382,7 +357,15 @@ function RecipientDashboard() {
       )}
       {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
         <>
-          <h3 style={{marginTop: 32}}>My Food Requests</h3>
+          <h3 style={{
+            marginTop: 32,
+            color: '#fff',
+            textShadow: '2px 2px 8px rgba(0,0,0,0.8)',
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '2rem',
+            fontWeight: '700',
+            textAlign: 'center'
+          }}>My Food Requests</h3>
           {myRequests.length === 0 ? (
             <div className="no-requests">
               <p>You have not made any food requests yet.</p>
@@ -394,55 +377,40 @@ function RecipientDashboard() {
                   <div className="food-header">
                     <strong className="food-name">{req.food_item || req.food_name}</strong>
                     <span className="quantity-badge">{req.quantity}</span>
-                    <button 
-                      className="delete-btn" 
-                      style={{marginLeft: 12, color: '#fff', background: '#dc3545', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif"}}
-                      onClick={() => handleDeleteRequest(req.id)}
-                    >
-                      Delete
-                    </button>
+                    {req.status !== 'delivered' && (
+                      <button 
+                        className="delete-btn" 
+                        style={{marginLeft: 12, color: '#fff', background: '#dc3545', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer', fontFamily: "'Montserrat', sans-serif"}}
+                        onClick={() => handleDeleteRequest(req.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                   <div className="food-details">
                     <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{req.needed_by}</span></div>
                     <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{req.location}</span></div>
                     <div className="detail-item"><span className="detail-label">🗓️ Requested:</span> <span className="detail-value">{new Date(req.created_at).toLocaleDateString()}</span></div>
                   </div>
+                  {/* Feedback form for delivered requests with no feedback */}
+                  {req.status === 'delivered' && !req.feedback_given && (
+                    <FeedbackForm requestId={req.id} recipientId={JSON.parse(localStorage.getItem('user')).id} onSubmitted={fetchMyRequests} />
+                  )}
+                  {/* Show feedback if already given */}
+                  {req.status === 'delivered' && req.feedback_given && (
+                    <div style={{marginTop:8, background:'#e6ffe6', padding:12, borderRadius:8}}>
+                      <b>Your Feedback:</b><br/>
+                      Rating: {req.feedback_rating} <br/>
+                      {req.feedback_comment && (<span>Comment: {req.feedback_comment}</span>)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </>
       )}
-      {JSON.parse(localStorage.getItem('user'))?.role === 'recipient' && (
-        <>
-          <h3 style={{marginTop: 32}}>My Donations (Accepted Requests)</h3>
-          {myDonations.length === 0 ? (
-            <div className="no-requests">
-              <p>You have not accepted any food requests yet.</p>
-            </div>
-          ) : (
-            <div className="dashboard-listings">
-              {myDonations.map((don) => (
-                <div key={don.id} className="dashboard-card">
-                  <div className="food-header">
-                    <strong className="food-name">{don.food_name}</strong>
-                    <span className="quantity-badge">{don.quantity}</span>
-                    <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
-                      Accepted by {don.accepted_by}
-                    </span>
-                  </div>
-                  <div className="food-details">
-                    <div className="detail-item"><span className="detail-label">📅 Needed by:</span> <span className="detail-value">{don.needed_by}</span></div>
-                    <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
-                    <div className="detail-item"><span className="detail-label">🗓️ Accepted:</span> <span className="detail-value">{don.updated_at ? new Date(don.updated_at).toLocaleDateString() : ''}</span></div>
-                    <div className="detail-item"><span className="detail-label">Donor:</span> <span className="detail-value">{don.donor_name || '-'}</span></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+      {/* Removed 'My Donations (Accepted Requests)' section per request */}
       {showRequestModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div className="modal-content" style={{ background: '#fff', padding: 32, borderRadius: 16, minWidth: 350, maxWidth: 420, boxShadow: '0 4px 24px rgba(40,167,69,0.15)', fontFamily: "'Montserrat', sans-serif", position: 'relative' }}>

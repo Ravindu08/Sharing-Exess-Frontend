@@ -1,6 +1,6 @@
 .ngos-page {
   padding: 2rem 0;
-  background: #f9f9f9;
+  background: transparent;
   min-height: 100vh;
 }
 
@@ -98,10 +98,11 @@
 
 .partners-grid.expanded {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
   margin-top: 2.2rem;
-  justify-items: center;
+  justify-items: stretch;
+  align-items: stretch;
 }
 
 .partner-card {
@@ -122,10 +123,9 @@
   background: linear-gradient(135deg, rgba(40, 167, 69, 0.85) 0%, rgba(32, 201, 151, 0.85) 100%); /* semi-transparent navigation bar green */
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
-  padding: 1.5rem 1rem 1rem 1rem;
+  padding: 1.25rem 1rem;
   text-align: center;
   width: 100%;
-  max-width: 315px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -228,6 +228,14 @@
 
 .partner-link:hover {
   color: #4ade80;
+}
+
+.ngos-hero-content h2,
+.ngos-hero-content h1,
+.ngos-hero-content p,
+.ngos-cta-btn,
+.partners-section h2 {
+  color: #fff !important;
 }
 
 @media (max-width: 900px) {

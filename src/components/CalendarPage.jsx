@@ -30,10 +30,6 @@ function CalendarPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
       padding: 40
     }}>
       <h2 style={{ textAlign: 'center', color: '#28a745', fontWeight: 900, fontSize: '2.5rem', marginBottom: 32 }}>Calendar</h2>

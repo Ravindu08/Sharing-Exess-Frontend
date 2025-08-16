@@ -4,26 +4,18 @@ function About() {
   return (
     <section
       className="about"
-      style={{
-        position: 'relative',
-        backgroundImage: 'url(/background.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '100vh',
-        zIndex: 1
-      }}
+      style={{ position: 'relative', minHeight: '100vh', zIndex: 1, background: 'transparent' }}
     >
       {/* Dark overlay removed for brighter background */}
       <div className="container" style={{ position: 'relative', zIndex: 3 }}>
-        <h2 style={{ color: '#000', textShadow: '2px 2px 8px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>About Sharing Excess</h2>
-        <p style={{ fontSize: '1.2rem', fontWeight: 500, color: '#000', textShadow: '1px 1px 6px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>
+        <h2 style={{ color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>About Sharing Excess</h2>
+        <p style={{ fontSize: '1.2rem', fontWeight: 500, color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>
           Every year, millions of tons of food are wasted while countless families go hungry. In Sri Lanka alone, food insecurity affects thousands of children and adults daily. At the same time, surplus food from restaurants, events, and households often ends up in landfills, contributing to environmental harm.
         </p>
-        <p style={{ color: '#000', textShadow: '1px 1px 6px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>
+        <p style={{ color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>
           <em>Imagine a world where no meal goes to waste and no person goes to bed hungry.</em>
         </p>
-        <p style={{ color: '#000', textShadow: '1px 1px 6px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>
+        <p style={{ color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>
           <strong>Sharing Excess</strong> is a food redistribution platform in Sri Lanka that bridges the gap between surplus and scarcity. Our mission is to create a sustainable system where leftover food is redirected to trusted NGOs, minimizing waste and maximizing impact. By connecting donors with NGOs and recipients, we ensure that good food reaches those who need it most.
         </p>
         <div style={{ margin: '40px 0', background: 'rgba(40,167,69,0.92)', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.18)', padding: '30px', textAlign: 'left' }}>
@@ -52,8 +44,8 @@ function About() {
           </p>
         </div>
         <hr style={{ margin: '40px 0', border: '1px solid #ccc' }} />
-        <h2 style={{ color: '#000', textShadow: '2px 2px 8px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>Contact Us</h2>
-        <p style={{ color: '#000', textShadow: '1px 1px 6px rgba(255,255,255,0.8)', fontFamily: "'Montserrat', sans-serif" }}>
+        <h2 style={{ color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>Contact Us</h2>
+        <p style={{ color: '#fff', textShadow: '1px 1px 6px rgba(0,0,0,0.5)', fontFamily: "'Montserrat', sans-serif" }}>
           <strong>Email:</strong> info@sharingexcess.lk<br />
           <strong>Phone:</strong> +94 77 123 4567<br />
           <strong>Address:</strong> Uva Wellassa University, Badulla, Sri Lanka
