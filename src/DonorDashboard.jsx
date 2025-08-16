@@ -2,30 +2,59 @@ import React, { useState, useEffect } from 'react';
 
 function DonorDashboard() {
   const [foodRequests, setFoodRequests] = useState([]);
+  const [myDonations, setMyDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
     fetchFoodRequests();
+    fetchMyDonations();
   }, []);
 
   const fetchFoodRequests = async () => {
+    setLoading(true);
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/get_requests.php');
       const data = await response.json();
-      
       if (data.success) {
         setFoodRequests(data.requests);
-      } else {
-        setError(data.message || 'Failed to fetch food requests');
       }
     } catch (error) {
-      setError('Network error. Please try again.');
+      // Optionally set error state here
     } finally {
       setLoading(false);
     }
   };
-
+  
+  const fetchMyDonations = async () => {
+    setLoading(true);
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      console.log("User from localStorage:", storedUser); // Debug user object
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/get_donor_donations.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          donor_id: storedUser && storedUser.id
+        }),
+      });
+      const data = await response.json();
+      console.log("Full backend response:", data);
+      if (data.success) {
+        setMyDonations(data.donations);
+      }
+    } catch (error) {
+      // Optionally set error state here
+    } finally {
+      setLoading(false);
+    }
+  };
+      
   const handleRespondToRequest = async (requestId, status) => {
     try {
       const response = await fetch('http://localhost/Sharing%20Excess/backend/respond_to_request.php', {
@@ -35,15 +64,18 @@ function DonorDashboard() {
         },
         body: JSON.stringify({
           request_id: requestId,
-          status: status // 'accepted' or 'declined'
+          status: status, // 'accepted'
+          user_id: JSON.parse(localStorage.getItem('user')).id,
+          user_name: JSON.parse(localStorage.getItem('user')).name
         })
       });
 
       const data = await response.json();
       
       if (data.success) {
-        // Refresh the requests list
+        // Refresh both requests and donations lists
         fetchFoodRequests();
+        fetchMyDonations();
         alert(`Request ${status} successfully!`);
       } else {
         alert(data.message || 'Failed to respond to request');
@@ -53,15 +85,52 @@ function DonorDashboard() {
     }
   };
 
+  // Officer/Admin-only actions
+  const handleDeleteRequest = async (requestId) => {
+    const role = (user && user.role ? String(user.role).toLowerCase() : '');
+    if (role !== 'officer' && role !== 'admin') return;
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/officer_delete_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId })
+      });
+      const data = await response.json();
+      if (data.success) {
+        fetchFoodRequests();
+        alert('Request deleted successfully!');
+      } else {
+        alert(data.message || 'Failed to delete request');
+      }
+    } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  };
+
+  const handleUpdateRequest = async (requestId, updatedFields) => {
+    const role = (user && user.role ? String(user.role).toLowerCase() : '');
+    if (role !== 'officer' && role !== 'admin') return;
+    try {
+      const response = await fetch('http://localhost/Sharing%20Excess/backend/officer_update_request.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId, updates: updatedFields })
+      });
+      const data = await response.json();
+      if (data.success) {
+        fetchFoodRequests();
+        alert('Request updated successfully!');
+      } else {
+        alert(data.message || 'Failed to update request');
+      }
+    } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -89,13 +158,7 @@ function DonorDashboard() {
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{
-        backgroundImage: "url(/background.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
-      }}>
+      <div className="dashboard-container">
         <h2 style={{ 
           color: '#000', 
           textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
@@ -126,16 +189,11 @@ function DonorDashboard() {
   }
 
   return (
-    <div className="dashboard-container" style={{
-      backgroundImage: "url(/background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "100vh"
-    }}>
-      <h2 style={{ 
-        color: '#000', 
-        textShadow: '2px 2px 8px rgba(255,255,255,0.8)', 
+    <div className="dashboard-container">
+
+      <h2 style={{
+        color: '#fff',
+        textShadow: '2px 2px 8px rgba(0,0,0,0.8)',
         fontFamily: "'Montserrat', sans-serif",
         fontSize: '2.5rem',
         fontWeight: '900',
@@ -146,8 +204,8 @@ function DonorDashboard() {
       </h2>
       <div className="dashboard-header">
         <p style={{ 
-          color: '#000', 
-          textShadow: '1px 1px 6px rgba(255,255,255,0.8)', 
+          color: '#fff',
+          textShadow: '1px 1px 6px rgba(0,0,0,0.8)', 
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '1.1rem',
           margin: 0
@@ -178,11 +236,11 @@ function DonorDashboard() {
       ) : (
         <div className="dashboard-listings">
           {foodRequests.map((request) => (
-            <div key={request.id} className="dashboard-card" style={{ 
-              background: 'rgba(255, 255, 255, 0.9)', 
-              borderRadius: '16px', 
-              padding: '1.5rem', 
-              marginBottom: '1.5rem', 
+            <div key={request.id} className="dashboard-card" style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              borderRadius: '16px',
+              padding: '1.5rem',
+              marginBottom: '1.5rem',
               boxShadow: '0 4px 24px rgba(40, 167, 69, 0.10)',
               border: '1px solid rgba(40, 167, 69, 0.2)',
               fontFamily: "'Montserrat', sans-serif"
@@ -194,6 +252,38 @@ function DonorDashboard() {
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Location: {request.location}</div>
               <div style={{ color: '#000', fontFamily: "'Montserrat', sans-serif" }}>Status: <span className={`status-${request.status}`}>{request.status}</span></div>
               <div className="request-actions">
+                {(user && user.role && user.role.toLowerCase() === 'officer') && (
+                  <div style={{ marginTop: 10 }}>
+                    <button
+                      onClick={() => { const v = prompt('Set status (pending, accepted, declined):', request.status || 'pending'); if (!v) return; handleUpdateRequest(request.id, { status: v }); }}
+                      className="update-btn"
+                      style={{ marginRight: 8, background: '#007bff', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
+                    >
+                      Set Status
+                    </button>
+                    <button
+                      onClick={() => { const v = prompt('Set quantity:', request.quantity); if (v===null) return; const n = parseInt(v,10); if (isNaN(n)) return alert('Invalid number'); handleUpdateRequest(request.id, { quantity: n }); }}
+                      className="update-btn"
+                      style={{ marginRight: 8, background: '#17a2b8', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
+                    >
+                      Set Qty
+                    </button>
+                    <button
+                      onClick={() => { const v = prompt('Set notes:', request.notes || ''); if (v===null) return; handleUpdateRequest(request.id, { notes: v }); }}
+                      className="update-btn"
+                      style={{ marginRight: 8, background: '#6f42c1', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
+                    >
+                      Set Notes
+                    </button>
+                    <button
+                      onClick={() => handleDeleteRequest(request.id)}
+                      className="delete-btn"
+                      style={{ background: '#dc3545', color: '#fff', borderRadius: 6, padding: '6px 14px', border: 'none' }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
                 {request.status === 'pending' && (
                   <>
                     <button 
@@ -201,12 +291,6 @@ function DonorDashboard() {
                       className="accept-btn"
                     >
                       Accept Request
-                    </button>
-                    <button 
-                      onClick={() => handleRespondToRequest(request.id, 'declined')}
-                      className="decline-btn"
-                    >
-                      Decline Request
                     </button>
                   </>
                 )}
@@ -221,8 +305,88 @@ function DonorDashboard() {
           ))}
         </div>
       )}
+
+      <h3 style={{
+        marginTop: 32,
+        color: '#fff',
+        textShadow: '2px 2px 8px rgba(0,0,0,0.8)',
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: '2rem',
+        fontWeight: '700',
+        textAlign: 'center'
+      }}>My Donations (My Food Listings)</h3>
+      {myDonations.length === 0 ? (
+        <div className="no-requests">
+          <p>You have not listed any food donations yet.</p>
+        </div>
+      ) : (
+        <div className="dashboard-listings">
+          {myDonations.map((don) => (
+  don.id === 'custom' ? (
+    <div key="custom-requests" className="dashboard-card" style={{ background: '#f8f9fa', border: '2px solid #28a745', borderRadius: '12px', marginBottom: '1.5rem', padding: '1.5rem' }}>
+      <div className="food-header">
+        <strong className="food-name" style={{ color: '#28a745', fontSize: '1.2rem' }}>Accepted Custom Requests</strong>
+        <span className="quantity-badge">{don.total_requests}</span>
+      </div>
+      <div className="food-details">
+        {don.requests && don.requests.length > 0 ? (
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {don.requests.map((req) => (
+              <li key={req.id} style={{ marginBottom: 12, color: '#222', fontFamily: "'Montserrat', sans-serif", background: '#fff', borderRadius: 6, padding: '10px 12px', border: '1px solid #e0e0e0' }}>
+                <div><b>Recipient:</b> {req.recipient_name || 'Unknown'}</div>
+                <div><b>Food:</b> {req.food_name}</div>
+                <div><b>Quantity:</b> {req.quantity}</div>
+                <div><b>Needed by:</b> {req.needed_by}</div>
+                <div><b>Location:</b> {req.location}</div>
+                <div><b>Accepted on:</b> {req.accepted_at ? new Date(req.accepted_at).toLocaleDateString() : ''}</div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>No accepted custom requests.</div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div key={don.id} className="dashboard-card">
+      <div className="food-header">
+        <strong className="food-name">{don.food_name}</strong>
+        <span className="quantity-badge">{don.quantity}</span>
+        <span className="status-badge" style={{marginLeft: 8, color: '#fff', background: don.status === 'accepted' ? '#28a745' : don.status === 'requested' ? '#6c757d' : '#007bff', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
+          {don.status.charAt(0).toUpperCase() + don.status.slice(1)}
+        </span>
+        {don.accepted_by && (
+          <span className="accepted-badge" style={{marginLeft: 8, color: '#fff', background: '#28a745', borderRadius: 6, padding: '4px 10px', fontWeight: 700}}>
+            Accepted by {don.accepted_by}
+          </span>
+        )}
+      </div>
+      <div className="food-details">
+        <div className="detail-item"><span className="detail-label">📅 Expiry:</span> <span className="detail-value">{don.expiry_date}</span></div>
+        <div className="detail-item"><span className="detail-label">📍 Location:</span> <span className="detail-value">{don.location}</span></div>
+        <div className="detail-item"><span className="detail-label">🗓️ Listed:</span> <span className="detail-value">{new Date(don.created_at).toLocaleDateString()}</span></div>
+        <div className="detail-item"><span className="detail-label">Total Requests:</span> <span className="detail-value">{don.total_requests}</span></div>
+        {don.requests && don.requests.length > 0 && (
+          <div className="accepted-requests" style={{ marginTop: 12, background: '#eaffea', borderRadius: 8, padding: '10px 14px' }}>
+            <strong style={{ color: '#28a745', fontFamily: "'Montserrat', sans-serif" }}>Accepted Requests:</strong>
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
+              {don.requests.map((req) => (
+                <li key={req.id} style={{ marginBottom: 6, color: '#222', fontFamily: "'Montserrat', sans-serif" }}>
+                  <span style={{ fontWeight: 600 }}>{req.recipient_name}</span> &times; {req.quantity} for <span style={{ fontWeight: 600 }}>{req.needed_by}</span> <br/>
+                  <span style={{ color: '#28a745' }}>Accepted on: {new Date(req.accepted_at).toLocaleDateString()}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+))}
+        </div>
+      )}
     </div>
   );
 }
 
-export default DonorDashboard; 
+export default DonorDashboard;

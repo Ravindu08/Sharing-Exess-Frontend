@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function VerificationModal({ isOpen, email, onClose, onVerified }) {
+function VerificationModal({ isOpen, email, password, role = 'recipient', onClose, onVerified }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -20,7 +20,20 @@ function VerificationModal({ isOpen, email, onClose, onVerified }) {
       });
       const data = await res.json();
       if (data.success) {
-        setSuccess('Email verified! You can now log in.');
+        setSuccess('Email verified! Logging you in...');
+        // Auto-login after verification
+        try {
+          const loginRes = await fetch('http://localhost/Sharing%20Excess/backend/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, role })
+          });
+          const loginData = await loginRes.json();
+          if (loginData.success) {
+            localStorage.setItem('user', JSON.stringify(loginData.user));
+            if (loginData.token) localStorage.setItem('token', loginData.token);
+          }
+        } catch (err) {}
         setTimeout(() => {
           setSuccess('');
           onVerified && onVerified();
